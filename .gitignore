@@ -1,0 +1,9 @@
+*.o
+*.exe
+*.gbc
+*.gb
+*.sgm
+*.sav
+*.rtc
+*.map
+*.sym
