@@ -21,25 +21,26 @@ Sector: MACRO
 	Entity
 	ENDM
 
-SECTION "WRAM 1", WRAM0
+SECTION "WRAM 0", WRAM0
 OAMTransferData::
 	ds $A0
 OAMTransferDataEnd::
-	ds 60
-TextStack::
-	ds $F24
+BGTransferData::
+	ds $168
+BGTransferDataEnd::
+	ds $DF8
 StackStart::
-SECTION "WRAM 2", WRAMX
+SECTION "WRAM 1", WRAMX
 	REPT 10
 	Sector
 	Sector
 	Sector
 	ENDR
 
-SECTION "Main HRAM", HRAM
-VBlankDestination::
-	ds 12
-VBlankDestinationEnd::
+SECTION "HRAM", HRAM
+WaitDMADoneDestination::
+	ds 9
+WaitDMADoneDestinationEnd::
 CursorPos::
 	ds 2
 Buffer::

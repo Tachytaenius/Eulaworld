@@ -69,7 +69,7 @@ RST_38:
 
 	SECTION	"V-Blank IRQ Vector",HOME[$40]
 VBL_VECT:
-	jp VBlankDestination
+	jp VBlank
 	
 	SECTION	"LCD IRQ Vector",HOME[$48]
 LCD_VECT:
@@ -194,9 +194,9 @@ EmbeddedSetForwards::
 	ld bc, $FFFE - $FF80 + 1
 	ld hl, $FF80
 	call SetForwards
-	ld de, VBlank
+	ld de, WaitDMADoneSource
 	ld hl, $FF80
-	ld bc, VBlankEnd - VBlank
+	ld bc, WaitDMADoneSourceEnd - WaitDMADoneSource
 	call CopyForwards
 	xor a
 	ld d, a
@@ -227,20 +227,14 @@ EmbeddedSetForwards::
 	ei
 
 MainLoop::
-	farcall Bank2
+	halt
+	nop
 	jp MainLoop
 
 PrintText::
 	; Text stack address, preferably TextStack, in bc.
-	; Text to write in hl.
-	; ROM bank in a unless 0.
-	cp 0
-	call nz, .bankSwitch
-	
-	ld a, [hl]
-	ret
-
-.bankSwitch
+	; Text to write in de.
+	ld a, [de]
 	
 	ret
 
@@ -310,14 +304,26 @@ StartLCD::
 	ld [rLCDC], a
 	ret
 
-VBlank::
-	push af
-	ld a, $C0
+WaitDMADoneSource::
 	ld [$FF46], a
-	ld a, $28	
+	ld a, $28
 .wait
 	dec a
 	jr nz, .wait
+	ret
+WaitDMADoneSourceEnd::
+
+VBlank::
+	push af
+	push hl
+	push bc
+	push de
+	ld a, $C0
+	call WaitDMADoneDestination
+	ld de, BGTransferData
+	pop de
+	pop bc
+	pop hl
 	pop af
 	reti
 VBlankEnd::
