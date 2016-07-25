@@ -232,10 +232,35 @@ MainLoop::
 	jp MainLoop
 
 PrintText::
-	; Text stack address, preferably TextStack, in bc.
 	; Text to write in de.
 	ld a, [de]
-	
+	ld hl, BGTransferData
+	ld a, [CursorPos]
+	ld b, a
+	ld a, [CursorPos + 1]
+	ld c, a
+	add hl, bc
+.loop
+	; Are we at the end of the usable screen? That is, is our cursor position at y=$0D, with 0 counted? The last usable BGTransferData byte is at $C207.
+	ld a, h
+	cp %11000010
+	jr nz, .nope
+	ld a, l
+	cp %00000111
+	jr nz, .nope
+	call ScrollUp
+	ld hl, BGTransferData
+	ld a, h
+	ld [CursorPos], a
+	ld a, l
+	ld [CursorPos + 1], a
+.nope
+	; Progress here.
+.done
+	ld a, h
+	ld [CursorPos], a
+	ld a, l
+	ld [CursorPos + 1], a
 	ret
 
 Text_HelloWorld::
