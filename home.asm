@@ -15,6 +15,7 @@
 	INCLUDE "bankmacros.asm"
 	INCLUDE "charmap.asm"
 	INCLUDE "textmacros.asm"
+	INCLUDE "constants.asm"
 
 ;****************************************************************************************************************************************************
 ;*	user data (constants)
@@ -58,16 +59,26 @@ endr
 
 ;	SECTION	"Org $18",HOME[$18]
 ;RST_18:
-	;jp	$100
+;	jp	$100
 
 	SECTION	"Org $20",HOME[$20]
 RST_20:
-	jp	$100
+	push de
+	ld e, a
+	ld d, 0
+rept 2
+	add hl, de
+endr
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	pop de
+	ret
 
-	SECTION	"Org $28",HOME[$28]
-RST_28:
-	jp	$100
-
+;	SECTION	"Org $28",HOME[$28]
+;RST_28:
+;	jp	$100
+;
 	SECTION	"Org $30",HOME[$30]
 RST_30:
 	jp	$100
@@ -185,6 +196,7 @@ Start::
 	di
 	ld bc, $2000
 	ld hl, $C000
+	ld de, 0
 EmbeddedSetForwards::
 	ld a, b
 	or c
@@ -229,141 +241,147 @@ EmbeddedSetForwards::
 	ld [rIF], a
 	ld a, 1 ; VBlank
 	ld [rIE], a
+	ld hl, $C208
+	ld a, h
+	ld [CursorPos], a
+	ld a, l
+	ld [CursorPos + 1], a
 	ei
-
 MainLoop::
 	ld de, Text_HelloWorld
 	call PrintText
+.Finished
 	halt
 	nop
-	jp MainLoop
+	jp .Finished
 
 UpdateBackground1::
 	ld bc, SCRN_X_B
 	ld hl, .table
 	ld a, [NextDrawLine]
 	rst JumpTable
+	ret
 .one
-	ld hl, $9800 + (SCRN_X_B * 0) + 12 * 0
+	ld hl, $9800 + (SCRN_X_B * 0) + (12 * 0)
 	ld de, BGTransferData + (SCRN_X_B * 0)
 	call CopyForwards
 	ld a, 1
 	ld [NextDrawLine], a
 	ret
 .two
-	ld hl, $9800 + (SCRN_X_B * 1) + 12 * 1
+	ld hl, $9800 + (SCRN_X_B * 1) + (12 * 1)
 	ld de, BGTransferData + (SCRN_X_B * 1)
 	call CopyForwards
 	ld a, 2
 	ld [NextDrawLine], a
 	ret
 .three
-	ld hl, $9800 + (SCRN_X_B * 2) + 12 * 2
+	ld hl, $9800 + (SCRN_X_B * 2) + (12 * 2)
 	ld de, BGTransferData + (SCRN_X_B * 2)
 	call CopyForwards
 	ld a, 3
 	ld [NextDrawLine], a
 	ret
 .four
-	ld hl, $9800 + (SCRN_X_B * 3) + 12 * 3
+	ld hl, $9800 + (SCRN_X_B * 3) + (12 * 3)
 	ld de, BGTransferData + (SCRN_X_B * 3)
 	call CopyForwards
 	ld a, 4
 	ld [NextDrawLine], a
 	ret
 .five
-	ld hl, $9800 + (SCRN_X_B * 4) + 12 * 4
+	ld hl, $9800 + (SCRN_X_B * 4) + (12 * 4)
 	ld de, BGTransferData + (SCRN_X_B * 4)
 	call CopyForwards
 	ld a, 5
 	ld [NextDrawLine], a
 	ret
 .six
-	ld hl, $9800 + (SCRN_X_B * 5) + 12 * 5
+	ld hl, $9800 + (SCRN_X_B * 5) + (12 * 5)
 	ld de, BGTransferData + (SCRN_X_B * 5)
 	call CopyForwards
 	ld a, 6
 	ld [NextDrawLine], a
 	ret
 .seven
-	ld hl, $9800 + (SCRN_X_B * 6) + 12 * 6
+	ld hl, $9800 + (SCRN_X_B * 6) + (12 * 6)
 	ld de, BGTransferData + (SCRN_X_B * 6)
 	call CopyForwards
 	ld a, 7
 	ld [NextDrawLine], a
 	ret
 .eight
-	ld hl, $9800 + (SCRN_X_B * 7) + 12 * 7
+	ld hl, $9800 + (SCRN_X_B * 7) + (12 * 7)
 	ld de, BGTransferData + (SCRN_X_B * 7)
 	call CopyForwards
 	ld a, 8
 	ld [NextDrawLine], a
 	ret
 .nine
-	ld hl, $9800 + (SCRN_X_B * 8) + 12 * 8
+	ld hl, $9800 + (SCRN_X_B * 8) + (12 * 8)
 	ld de, BGTransferData + (SCRN_X_B * 8)
 	call CopyForwards
 	ld a, 9
 	ld [NextDrawLine], a
 	ret
 .ten
-	ld hl, $9800 + (SCRN_X_B * 9) + 12 * 9
+	ld hl, $9800 + (SCRN_X_B * 9) + (12 * 9)
 	ld de, BGTransferData + (SCRN_X_B * 9)
 	call CopyForwards
 	ld a, 10
 	ld [NextDrawLine], a
 	ret
 .eleven
-	ld hl, $9800 + (SCRN_X_B * 10) + 12 * 10
+	ld hl, $9800 + (SCRN_X_B * 10) + (12 * 10)
 	ld de, BGTransferData + (SCRN_X_B * 10)
 	call CopyForwards
 	ld a, 11
 	ld [NextDrawLine], a
 	ret
 .twelve
-	ld hl, $9800 + (SCRN_X_B * 11) + 12 * 11
+	ld hl, $9800 + (SCRN_X_B * 11) + (12 * 11)
 	ld de, BGTransferData + (SCRN_X_B * 11)
 	call CopyForwards
 	ld a, 12
 	ld [NextDrawLine], a
 	ret
 .thirteen
-	ld hl, $9800 + (SCRN_X_B * 12) + 12 * 12
+	ld hl, $9800 + (SCRN_X_B * 12) + (12 * 12)
 	ld de, BGTransferData + (SCRN_X_B * 12)
 	call CopyForwards
 	ld a, 13
 	ld [NextDrawLine], a
 	ret
 .fourteen
-	ld hl, $9800 + (SCRN_X_B * 13) + 12 * 13
+	ld hl, $9800 + (SCRN_X_B * 13) + (12 * 13)
 	ld de, BGTransferData + (SCRN_X_B * 13)
 	call CopyForwards
 	ld a, 14
 	ld [NextDrawLine], a
 	ret
 .fifteen
-	ld hl, $9800 + (SCRN_X_B * 14) + 12 * 14
+	ld hl, $9800 + (SCRN_X_B * 14) + (12 * 14)
 	ld de, BGTransferData + (SCRN_X_B * 14)
 	call CopyForwards
 	ld a, 15
 	ld [NextDrawLine], a
 	ret
 .sixteen
-	ld hl, $9800 + (SCRN_X_B * 15) + 12 * 15
+	ld hl, $9800 + (SCRN_X_B * 15) + (12 * 15)
 	ld de, BGTransferData + (SCRN_X_B * 15)
 	call CopyForwards
 	ld a, 16
 	ld [NextDrawLine], a
 	ret
 .seventeen
-	ld hl, $9800 + (SCRN_X_B * 16) + 12 * 16
+	ld hl, $9800 + (SCRN_X_B * 16) + (12 * 16)
 	ld de, BGTransferData + (SCRN_X_B * 16)
 	call CopyForwards
 	ld a, 17
 	ld [NextDrawLine], a
 	ret
 .eighteen
-	ld hl, $9800 + (SCRN_X_B * 17) + 12 * 17
+	ld hl, $9800 + (SCRN_X_B * 17) + (12 * 17)
 	ld de, BGTransferData + (SCRN_X_B * 17)
 	call CopyForwards
 	ld a, 0
@@ -390,57 +408,11 @@ UpdateBackground1::
 	dw .seventeen
 	dw .eighteen
 
-LineTable::
-	dw $C0B2
-	dw $C0C4
-	dw $C0D6
-	dw $C0E8
-	dw $C0FA
-	dw $C10C
-	dw $C11E
-	dw $C130
-	dw $C142
-	dw $C154
-	dw $C166
-	dw $C178
-	dw $C18A
-	dw $C19C
-	dw $C1AE
-	dw $C1C0
-	dw $C1D2
-	dw $C1E4
-	dw $C1F6
-	dw $C208
-LineTableEnd::
-
 Error::
 	; Work-in-progress.
 	halt
 	nop
 	jr Error
-
-CheckValueForwards::
-	;increment hl until a value in de's bc-length (in words, not bytes) table is hit.
-	;If a value was found, carry is set. If no value could be found within the table, carry is reset.
-	ld a, b
-	or c
-	jr z, .fail
-	ld a, [de]
-	cp l
-	jr nz, .cont
-	inc de
-	ld a, [de]
-	cp h
-	scf
-	ret z
-.cont
-	inc hl
-	inc de
-	dec bc
-	jr CheckValueForwards
-.fail
-	or a
-	ret
 
 SetForwards::
 	;set bc bytes forward from hl to d
@@ -520,11 +492,7 @@ VBlank::
 	push de
 	ld a, $C0
 	call WaitDMADoneDestination
-	ld hl, Flags
-	bit 1, [hl]
-	call nz, UpdateBackground1
-	ld hl, Flags
-	res 0, [hl]
+	call UpdateBackground1
 	pop de
 	pop bc
 	pop hl
@@ -568,36 +536,50 @@ GetJoypad::
 	ret
 
 PrintText::
-	call .done
-	ld bc, BGTransferData
-	add hl, bc
-TextLoop::
-	; Are we after the end of the usable text screen?
-	; The last usable byte is $, so we'll need to check for $, or %. ; Unfinished writing.
-	
+	ld a, [CursorPos]
+	ld h, a
+	ld a, [CursorPos + 1]
+	ld l, a
+.loop
+	ld a, h
+	cp $C2
+	jr nz, .skip
+	ld a, l
+	cp $1C
+	jr z, .newline
 .skip
 	ld a, [de]
 	inc de
 	cp $60
 	jr nz, .not_newline
-	jr TextLoop
+.newline
+	push de
+	call ShiftLineUp
+	pop de
+	ld hl, $C208
+	jr .loop
 .not_newline
 	cp $61
-	jr nz, .not_end
-	jr TextLoop
-.not_end
-	cp $62
-	jr nz, .not_wait
-	jr TextLoop
-.not_wait
+	jr z, .done
 	ld [hli], a
-	jr TextLoop
+	jr .loop
+
 .done
-	ld a, [CursorPos]
-	ld h, a
-	ld a, [CursorPos + 1]
-	ld l, a
+	ld a, h
+	ld [CursorPos], a
+	ld a, l
+	ld [CursorPos + 1], a
 	ret
+
+ShiftLineUp::
+	ld hl, BGTransferDataGutter
+	ld de, BGTransferData
+	ld bc, BGTransferDataEnd - BGTransferData
+	call CopyForwards
+	ld de, 0
+	ld bc, 20
+	ld hl, BGTransferDataEnd - 19
+	jp SetForwards
 
 INCLUDE "text.asm"
 ;*** End Of File ***
