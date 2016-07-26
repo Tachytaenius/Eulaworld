@@ -248,12 +248,17 @@ EmbeddedSetForwards::
 	ld [CursorPos + 1], a
 	ei
 MainLoop::
-	ld de, Text_HelloWorld
-	call PrintText
 .Finished
 	halt
 	nop
 	jp .Finished
+
+WaitForA::
+	call GetJoypad
+	ld a, [PressedJoypad]
+	and JOY_A
+	jr z, WaitForA
+	ret
 
 UpdateBackground1::
 	ld bc, SCRN_X_B
@@ -505,34 +510,33 @@ Font::
 FontEnd::
 
 GetJoypad::
-	ld a, $20
-	ld [$FF00], a
-	ld a, [$FF00]
-	ld a, [$FF00]
-	cpl
+	ld a, %00100000
+	ld [rP1], a
+	ld a, [rP1]
+	ld a, [rP1]
+	ld a, [rP1]
+	ld a, [rP1]
 	and $0F
 	swap a
 	ld b, a
-	ld a, $10
-	ld [$FF00], a
-	ld a, [$FF00]
-	ld a, [$FF00]
-	ld a, [$FF00]
-	ld a, [$FF00]
-	ld a, [$FF00]
-	ld a, [$FF00]
-	cpl
+	ld a, %00010000
+	ld [rP1], a
+	ld a, [rP1]
+	ld a, [rP1]
+	ld a, [rP1]
+	ld a, [rP1]
 	and $0F
 	or b
-	ld d, a
+	cpl
+	
+	push af
+	ld b, a
 	ld a, [DownJoypad]
-	xor d
-	and d
+	cpl
+	and b
 	ld [PressedJoypad], a
-	ld a, d
+	pop af
 	ld [DownJoypad], a
-	ld a, $30
-	ld [$FF00], a
 	ret
 
 PrintText::
@@ -578,7 +582,7 @@ ShiftLineUp::
 	call CopyForwards
 	ld de, 0
 	ld bc, 20
-	ld hl, BGTransferDataEnd - 19
+	ld hl, BGTransferDataEnd - 20
 	jp SetForwards
 
 INCLUDE "text.asm"

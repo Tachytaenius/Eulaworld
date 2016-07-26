@@ -8,10 +8,16 @@ Text_HelloWorld::
 	line "1"
 	line "aaaa"
 	line "34343"
-	linewait
-	wait
 	text "aaa"
 	line "awrae"
 	text "wisdfs[duihfsidu[gpo;sfjoi;fsagpfo;asdf"
 	line "adkjfbs[oighsddpgsifjguhz ds uhdfgu dof hosh ;;dhsdkl jhszdi hszf;kgjh;skdhkf"
+	done
+
+Text_HelloWorld2::
+	text "Hello, world!"
+	linedone
+
+Text_HelloWorld3::
+	text "Greetings, universe!"
 	done

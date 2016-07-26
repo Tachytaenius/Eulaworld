@@ -1,7 +1,4 @@
 text EQUS "db "
 line EQUS "db $60, "
 done EQUS "db $61"
-wait EQUS "db $62"
 linedone EQUS "db $60, $61"
-linewait EQUS "db $60, $62"
-waitdone EQUS "db $62, $61"
