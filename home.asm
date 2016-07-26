@@ -9,9 +9,8 @@
 ;****************************************************************************************************************************************************
 ;*	Includes
 ;****************************************************************************************************************************************************
-	; system includes
-	INCLUDE	"hardware.inc"
-	; project includes
+
+	INCLUDE	"hardware.asm"
 	INCLUDE "rst.asm"
 	INCLUDE "bankmacros.asm"
 	INCLUDE "charmap.asm"
@@ -37,7 +36,7 @@ RST_00:
 	jp Farcall
 
 	SECTION	"Org $08",HOME[$08]
-RST_08: 
+RST_08:
 	ld [ROMBank], a
 	ld [$2000], a
 	ret
@@ -45,11 +44,21 @@ RST_08:
 
 	SECTION	"Org $10",HOME[$10]
 RST_10:
-	jp	$100
+	push de
+	ld e, a
+	ld d, 0
+rept 2
+	add hl, de
+endr
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	pop de
+	jp [hl]
 
-	SECTION	"Org $18",HOME[$18]
-RST_18:
-	jp	$100
+;	SECTION	"Org $18",HOME[$18]
+;RST_18:
+	;jp	$100
 
 	SECTION	"Org $20",HOME[$20]
 RST_20:
@@ -70,7 +79,7 @@ RST_38:
 	SECTION	"V-Blank IRQ Vector",HOME[$40]
 VBL_VECT:
 	jp VBlank
-	
+
 	SECTION	"LCD IRQ Vector",HOME[$48]
 LCD_VECT:
 	reti
@@ -103,7 +112,7 @@ JOYPAD_VECT:
 		;0123
 
 	; $0143 (Color GameBoy compatibility code)
-	DB	$00	; $00 - DMG 
+	DB	$00	; $00 - DMG
 			; $80 - DMG/GBC
 			; $C0 - GBC Only cartridge
 
@@ -215,10 +224,6 @@ EmbeddedSetForwards::
 	ld hl, _VRAM
 	ld bc, FontEnd - Font
 	call CopyDoubleForwards
-	ld de, Text_HelloWorld
-	ld hl, $9800+3+(SCRN_VY_B*7)
-	ld bc, Text_HelloWorldEnd - Text_HelloWorld
-	call CopyForwards
 	call StartLCD
 	xor a
 	ld [rIF], a
@@ -227,45 +232,215 @@ EmbeddedSetForwards::
 	ei
 
 MainLoop::
+	ld de, Text_HelloWorld
+	call PrintText
 	halt
 	nop
 	jp MainLoop
 
-PrintText::
-	; Text to write in de.
-	ld a, [de]
-	ld hl, BGTransferData
-	ld a, [CursorPos]
-	ld b, a
-	ld a, [CursorPos + 1]
-	ld c, a
-	add hl, bc
-.loop
-	; Are we at the end of the usable screen? That is, is our cursor position at y=$0D, with 0 counted? The last usable BGTransferData byte is at $C207.
-	ld a, h
-	cp %11000010
-	jr nz, .nope
-	ld a, l
-	cp %00000111
-	jr nz, .nope
-	call ScrollUp
-	ld hl, BGTransferData
-	ld a, h
-	ld [CursorPos], a
-	ld a, l
-	ld [CursorPos + 1], a
-.nope
-	; Progress here.
-.done
-	ld a, h
-	ld [CursorPos], a
-	ld a, l
-	ld [CursorPos + 1], a
+UpdateBackground1::
+	ld bc, SCRN_X_B
+	ld hl, .table
+	ld a, [NextDrawLine]
+	rst JumpTable
+.one
+	ld hl, $9800 + (SCRN_X_B * 0) + 12 * 0
+	ld de, BGTransferData + (SCRN_X_B * 0)
+	call CopyForwards
+	ld a, 1
+	ld [NextDrawLine], a
+	ret
+.two
+	ld hl, $9800 + (SCRN_X_B * 1) + 12 * 1
+	ld de, BGTransferData + (SCRN_X_B * 1)
+	call CopyForwards
+	ld a, 2
+	ld [NextDrawLine], a
+	ret
+.three
+	ld hl, $9800 + (SCRN_X_B * 2) + 12 * 2
+	ld de, BGTransferData + (SCRN_X_B * 2)
+	call CopyForwards
+	ld a, 3
+	ld [NextDrawLine], a
+	ret
+.four
+	ld hl, $9800 + (SCRN_X_B * 3) + 12 * 3
+	ld de, BGTransferData + (SCRN_X_B * 3)
+	call CopyForwards
+	ld a, 4
+	ld [NextDrawLine], a
+	ret
+.five
+	ld hl, $9800 + (SCRN_X_B * 4) + 12 * 4
+	ld de, BGTransferData + (SCRN_X_B * 4)
+	call CopyForwards
+	ld a, 5
+	ld [NextDrawLine], a
+	ret
+.six
+	ld hl, $9800 + (SCRN_X_B * 5) + 12 * 5
+	ld de, BGTransferData + (SCRN_X_B * 5)
+	call CopyForwards
+	ld a, 6
+	ld [NextDrawLine], a
+	ret
+.seven
+	ld hl, $9800 + (SCRN_X_B * 6) + 12 * 6
+	ld de, BGTransferData + (SCRN_X_B * 6)
+	call CopyForwards
+	ld a, 7
+	ld [NextDrawLine], a
+	ret
+.eight
+	ld hl, $9800 + (SCRN_X_B * 7) + 12 * 7
+	ld de, BGTransferData + (SCRN_X_B * 7)
+	call CopyForwards
+	ld a, 8
+	ld [NextDrawLine], a
+	ret
+.nine
+	ld hl, $9800 + (SCRN_X_B * 8) + 12 * 8
+	ld de, BGTransferData + (SCRN_X_B * 8)
+	call CopyForwards
+	ld a, 9
+	ld [NextDrawLine], a
+	ret
+.ten
+	ld hl, $9800 + (SCRN_X_B * 9) + 12 * 9
+	ld de, BGTransferData + (SCRN_X_B * 9)
+	call CopyForwards
+	ld a, 10
+	ld [NextDrawLine], a
+	ret
+.eleven
+	ld hl, $9800 + (SCRN_X_B * 10) + 12 * 10
+	ld de, BGTransferData + (SCRN_X_B * 10)
+	call CopyForwards
+	ld a, 11
+	ld [NextDrawLine], a
+	ret
+.twelve
+	ld hl, $9800 + (SCRN_X_B * 11) + 12 * 11
+	ld de, BGTransferData + (SCRN_X_B * 11)
+	call CopyForwards
+	ld a, 12
+	ld [NextDrawLine], a
+	ret
+.thirteen
+	ld hl, $9800 + (SCRN_X_B * 12) + 12 * 12
+	ld de, BGTransferData + (SCRN_X_B * 12)
+	call CopyForwards
+	ld a, 13
+	ld [NextDrawLine], a
+	ret
+.fourteen
+	ld hl, $9800 + (SCRN_X_B * 13) + 12 * 13
+	ld de, BGTransferData + (SCRN_X_B * 13)
+	call CopyForwards
+	ld a, 14
+	ld [NextDrawLine], a
+	ret
+.fifteen
+	ld hl, $9800 + (SCRN_X_B * 14) + 12 * 14
+	ld de, BGTransferData + (SCRN_X_B * 14)
+	call CopyForwards
+	ld a, 15
+	ld [NextDrawLine], a
+	ret
+.sixteen
+	ld hl, $9800 + (SCRN_X_B * 15) + 12 * 15
+	ld de, BGTransferData + (SCRN_X_B * 15)
+	call CopyForwards
+	ld a, 16
+	ld [NextDrawLine], a
+	ret
+.seventeen
+	ld hl, $9800 + (SCRN_X_B * 16) + 12 * 16
+	ld de, BGTransferData + (SCRN_X_B * 16)
+	call CopyForwards
+	ld a, 17
+	ld [NextDrawLine], a
+	ret
+.eighteen
+	ld hl, $9800 + (SCRN_X_B * 17) + 12 * 17
+	ld de, BGTransferData + (SCRN_X_B * 17)
+	call CopyForwards
+	ld a, 0
+	ld [NextDrawLine], a
 	ret
 
-Text_HelloWorld::
-	db ""
-Text_HelloWorldEnd::
+.table
+	dw .one
+	dw .two
+	dw .three
+	dw .four
+	dw .five
+	dw .six
+	dw .seven
+	dw .eight
+	dw .nine
+	dw .ten
+	dw .eleven
+	dw .twelve
+	dw .thirteen
+	dw .fourteen
+	dw .fifteen
+	dw .sixteen
+	dw .seventeen
+	dw .eighteen
+
+LineTable::
+	dw $C0B2
+	dw $C0C4
+	dw $C0D6
+	dw $C0E8
+	dw $C0FA
+	dw $C10C
+	dw $C11E
+	dw $C130
+	dw $C142
+	dw $C154
+	dw $C166
+	dw $C178
+	dw $C18A
+	dw $C19C
+	dw $C1AE
+	dw $C1C0
+	dw $C1D2
+	dw $C1E4
+	dw $C1F6
+	dw $C208
+LineTableEnd::
+
+Error::
+	; Work-in-progress.
+	halt
+	nop
+	jr Error
+
+CheckValueForwards::
+	;increment hl until a value in de's bc-length (in words, not bytes) table is hit.
+	;If a value was found, carry is set. If no value could be found within the table, carry is reset.
+	ld a, b
+	or c
+	jr z, .fail
+	ld a, [de]
+	cp l
+	jr nz, .cont
+	inc de
+	ld a, [de]
+	cp h
+	scf
+	ret z
+.cont
+	inc hl
+	inc de
+	dec bc
+	jr CheckValueForwards
+.fail
+	or a
+	ret
 
 SetForwards::
 	;set bc bytes forward from hl to d
@@ -287,7 +462,7 @@ CopyForwards::
 	ld [hli], a
 	dec bc
 	jr CopyForwards
-	
+
 CopyDoubleForwards::
 	;copy bc bytes forward from de to hl, twice for each byte
 	ld a, b
@@ -345,7 +520,11 @@ VBlank::
 	push de
 	ld a, $C0
 	call WaitDMADoneDestination
-	ld de, BGTransferData
+	ld hl, Flags
+	bit 1, [hl]
+	call nz, UpdateBackground1
+	ld hl, Flags
+	res 0, [hl]
 	pop de
 	pop bc
 	pop hl
@@ -356,4 +535,69 @@ VBlankEnd::
 Font::
 	INCBIN "font.1bpp"
 FontEnd::
+
+GetJoypad::
+	ld a, $20
+	ld [$FF00], a
+	ld a, [$FF00]
+	ld a, [$FF00]
+	cpl
+	and $0F
+	swap a
+	ld b, a
+	ld a, $10
+	ld [$FF00], a
+	ld a, [$FF00]
+	ld a, [$FF00]
+	ld a, [$FF00]
+	ld a, [$FF00]
+	ld a, [$FF00]
+	ld a, [$FF00]
+	cpl
+	and $0F
+	or b
+	ld d, a
+	ld a, [DownJoypad]
+	xor d
+	and d
+	ld [PressedJoypad], a
+	ld a, d
+	ld [DownJoypad], a
+	ld a, $30
+	ld [$FF00], a
+	ret
+
+PrintText::
+	call .done
+	ld bc, BGTransferData
+	add hl, bc
+TextLoop::
+	; Are we after the end of the usable text screen?
+	; The last usable byte is $, so we'll need to check for $, or %. ; Unfinished writing.
+	
+.skip
+	ld a, [de]
+	inc de
+	cp $60
+	jr nz, .not_newline
+	jr TextLoop
+.not_newline
+	cp $61
+	jr nz, .not_end
+	jr TextLoop
+.not_end
+	cp $62
+	jr nz, .not_wait
+	jr TextLoop
+.not_wait
+	ld [hli], a
+	jr TextLoop
+.done
+	ld a, [CursorPos]
+	ld h, a
+	ld a, [CursorPos + 1]
+	ld l, a
+	ret
+
+INCLUDE "text.asm"
 ;*** End Of File ***
