@@ -44,7 +44,7 @@ Text_NewGame::
 	line "want to start a new"
 	line "game? To overwrite"
 	line "the previous one you"
-	line "will need to save"
+	text "will need to save"
 	line "while playing this"
 	line "one."
 	linedone

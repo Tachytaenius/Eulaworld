@@ -218,8 +218,12 @@ EmbeddedSetForwards::
 	ei
 	ld de, Text_Eulaworld
 	call PrintText
-	call WaitForA
+	xor a
+	cpl
+	ld [DownJoypad], a
+	call WaitForStart
 LoopGameChoice::
+	call ClearScreen
 	ld de, Text_GameMenu
 	call PrintText
 	xor a
@@ -227,8 +231,12 @@ LoopGameChoice::
 	ld a, "▶"
 	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
 LoopGameChoice_Inner::
-	call WaitForSelectOrStart
-	jr c, Change
+	call WaitForInput
+	and JOY_SELECT
+	jr nz, Change
+	ld a, [PressedJoypad]
+	and JOY_START
+	jr z, LoopGameChoice_Inner
 	ld a, [MenuSelection]
 	ld hl, GameMenuTable
 	rst JumpTable
@@ -241,6 +249,12 @@ MainLoop::
 GameMenuTable::
 	dw LoadGame
 	dw NewGame
+
+ClearScreen::
+	ld d, " "
+	ld bc, BGTransferDataEnd - BGTransferData
+	ld hl, BGTransferData
+	jp SetForwards
 
 Change::
 	ld hl, MenuSelection
@@ -262,46 +276,47 @@ Change::
 	jr LoopGameChoice_Inner
 
 LoadGame::
+	call ClearScreen
 	ld de, Text_LoadGame
 	call PrintText
-	ret
+	jp WaitForStart
 
 NewGame::
+	call ClearScreen
 	ld de, Text_NewGame
 	call PrintText
-	call WaitForA
-	ret
+	jp WaitForStart
 
-WaitForA::
-	call GetJoypad
-	ld a, [ReleasedJoypad]
-	and JOY_A
-	jr z, WaitForA
-.loop
-	call GetJoypad
-	ld a, [PressedJoypad]
-	and JOY_A
-	jr z, .loop
-	ret
-
-WaitForSelectOrStart::
-	; Carry if select was pressed, not-carry if it was start.
+WaitForInput::
 	call WaitForAllButtonsToBeReleased
 .loop
+	halt
+	nop
 	call GetJoypad
 	ld a, [PressedJoypad]
-	and JOY_SELECT
-	jr nz, .select
-	and JOY_START
+	and $FF
 	jr z, .loop
-	or a
 	ret
 
-.select
-	scf
+WaitForStart::
+	halt
+	nop
+	call GetJoypad
+	ld a, [ReleasedJoypad]
+	and JOY_START
+	jr z, WaitForStart
+.loop
+	halt
+	nop
+	call GetJoypad
+	ld a, [PressedJoypad]
+	and JOY_START
+	jr z, .loop
 	ret
 
 WaitForAllButtonsToBeReleased::
+	halt
+	nop
 	call GetJoypad
 	ld a, [DownJoypad]
 	and a
@@ -585,10 +600,6 @@ GetJoypad::
 	and b
 	ld [PressedJoypad], a
 	
-	ld hl, Flags
-	bit 0, [hl]
-	jr z, .skip
-	
 	ld a, [DownJoypad]
 	ld b, a
 	ld a, d
@@ -598,12 +609,6 @@ GetJoypad::
 	ld [ReleasedJoypad], a
 	ld a, d
 	ld [DownJoypad], a
-	ret
-
-.skip
-	set 0, [hl]
-	ld a, $FF
-	ld [ReleasedJoypad], a
 	ret
 
 PrintText::
