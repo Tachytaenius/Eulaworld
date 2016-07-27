@@ -216,16 +216,61 @@ EmbeddedSetForwards::
 	ld a, l
 	ld [CursorPos + 1], a
 	ei
-MainLoop::
 	ld de, Text_Eulaworld
 	call PrintText
 	call WaitForA
+LoopGameChoice::
 	ld de, Text_GameMenu
 	call PrintText
-.Finished
+	xor a
+	ld [MenuSelection], a
+	ld a, "▶"
+	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
+LoopGameChoice_Inner::
+	call WaitForSelectOrStart
+	jr c, Change
+	ld a, [MenuSelection]
+	ld hl, GameMenuTable
+	rst JumpTable
+	jr LoopGameChoice
+MainLoop::
 	halt
 	nop
-	jp .Finished
+	jp MainLoop
+
+GameMenuTable::
+	dw LoadGame
+	dw NewGame
+
+Change::
+	ld hl, MenuSelection
+	bit 0, [hl]
+	jr nz, .toggleOff
+	set 0, [hl]
+	ld a, "▶"
+	ld [BGTransferData + (SCRN_X_B * 14) + 3], a
+	xor a ; ld a, " "
+	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
+	jr LoopGameChoice_Inner
+
+.toggleOff
+	res 0, [hl]
+	ld a, "▶"
+	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
+	xor a ; ld a, " "
+	ld [BGTransferData + (SCRN_X_B * 14) + 3], a
+	jr LoopGameChoice_Inner
+
+LoadGame::
+	ld de, Text_LoadGame
+	call PrintText
+	ret
+
+NewGame::
+	ld de, Text_NewGame
+	call PrintText
+	call WaitForA
+	ret
 
 WaitForA::
 	call GetJoypad
@@ -237,6 +282,30 @@ WaitForA::
 	ld a, [PressedJoypad]
 	and JOY_A
 	jr z, .loop
+	ret
+
+WaitForSelectOrStart::
+	; Carry if select was pressed, not-carry if it was start.
+	call WaitForAllButtonsToBeReleased
+.loop
+	call GetJoypad
+	ld a, [PressedJoypad]
+	and JOY_SELECT
+	jr nz, .select
+	and JOY_START
+	jr z, .loop
+	or a
+	ret
+
+.select
+	scf
+	ret
+
+WaitForAllButtonsToBeReleased::
+	call GetJoypad
+	ld a, [DownJoypad]
+	and a
+	jr nz, WaitForAllButtonsToBeReleased
 	ret
 
 UpdateBackground1::

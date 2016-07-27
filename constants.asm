@@ -1,4 +1,7 @@
-NULL		EQU %00000000
+NULL			EQU %00000000
+
+; Where is the stack supposed to start?
+StackStart		EQU $D000
 
 ; Joypad constants
 JOY_DOWN		EQU %10000000

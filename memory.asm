@@ -11,9 +11,10 @@ BGTransferData::
 BGTransferDataEnd::
 W_Contents::
 	Contents
-W0_Remaining::
-	ds $B11
-StackStart::
+MenuSelection::
+	ds 1
+
+; StackStart EQU $D000
 
 SECTION "WRAM 1", WRAMX
 REPT 10
@@ -42,7 +43,7 @@ ReleasedJoypad::;;5 B
 	ds 1         ;4 A
 PressedJoypad::;;;3 DOWN
 	ds 1         ;2 UP
-NextDrawLine::;;;;1 LEFT
+NextDrawLine:    ;1 LEFT
 	ds 1         ;0 RIGHT
 NextWriteLine::
 	ds 1
