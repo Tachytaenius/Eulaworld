@@ -137,16 +137,16 @@ JOYPAD_VECT:
 	DB	$00	; $00 - GameBoy
 
 	; $0147 (Cartridge type - all Color GameBoy cartridges are at least $19)
-	DB	$19	; $19 - ROM + MBC5
+	DB	$1B ; $1B - ROM + MBC5 + RAM + BATT
 
 	; $0148 (ROM size)
 	DB	$01	; $01 - 512Kbit = 64Kbyte = 4 banks
 
 	; $0149 (RAM size)
-	DB	$00	; $00 - None
+	DB	$04 ;4 -   1MBit =128kB =16 banks
 
 	; $014A (Destination code)
-	DB	$00	; $01 - All others
+	DB	$01	; $01 - All others
 			; $00 - Japan
 
 	; $014B (Licensee code - this _must_ be $33)
@@ -248,6 +248,14 @@ EmbeddedSetForwards::
 	ld [CursorPos + 1], a
 	ei
 MainLoop::
+	ld de, Text_HelloWorld1
+	call PrintText
+	call WaitForA
+	ld de, Text_HelloWorld2
+	call PrintText
+	call WaitForA
+	ld de, Text_HelloWorld3
+	call PrintText
 .Finished
 	halt
 	nop
@@ -255,9 +263,14 @@ MainLoop::
 
 WaitForA::
 	call GetJoypad
-	ld a, [PressedJoypad]
+	ld a, [ReleasedJoypad]
 	and JOY_A
 	jr z, WaitForA
+.loop
+	call GetJoypad
+	ld a, [PressedJoypad]
+	and JOY_A
+	jr z, .loop
 	ret
 
 UpdateBackground1::
@@ -529,14 +542,33 @@ GetJoypad::
 	or b
 	cpl
 	
-	push af
+	ld d, a
+	
 	ld b, a
 	ld a, [DownJoypad]
 	cpl
 	and b
 	ld [PressedJoypad], a
-	pop af
+	
+	ld hl, Flags
+	bit 0, [hl]
+	jr z, .skip
+	
+	ld a, [DownJoypad]
+	ld b, a
+	ld a, d
+	cpl
+	and b
+	ld a, b
+	ld [ReleasedJoypad], a
+	ld a, d
 	ld [DownJoypad], a
+	ret
+
+.skip
+	set 0, [hl]
+	ld a, $FF
+	ld [ReleasedJoypad], a
 	ret
 
 PrintText::
@@ -586,4 +618,6 @@ ShiftLineUp::
 	jp SetForwards
 
 INCLUDE "text.asm"
+
+INCLUDE "memory.asm" ; This file needs to know what RAM type our cartridge has.
 ;*** End Of File ***

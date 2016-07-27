@@ -1,25 +1,4 @@
-Entity: MACRO
-	ds 1 ; ID
-	ds 2 ; HP
-	ds 1 ; EP
-	ds 1 ; MP
-	ds 1 ; CP
-	ds 8 ; Inventory
-	ds 1 ; Abilities
-	ds 1 ; Flags
-	ENDM
-
-Sector: MACRO
-	ds 1 ;1XYZ
-	ds 1 ;Flags
-	Entity
-	Entity
-	Entity
-	Entity
-	Entity
-	Entity
-	Entity
-	ENDM
+INCLUDE "memorymacros.asm"
 
 SECTION "WRAM 0", WRAM0
 OAMTransferData::
@@ -30,14 +9,18 @@ BGTransferDataGutter::
 BGTransferData::
 	ds $168
 BGTransferDataEnd::
-	ds $DE4
+W_Contents::
+	Contents
+W0_Remaining::
+	ds $B11
 StackStart::
+
 SECTION "WRAM 1", WRAMX
-	REPT 10
+REPT 10
 	Sector
 	Sector
 	Sector
-	ENDR
+ENDR
 
 SECTION "HRAM", HRAM
 WaitDMADoneDestination::
@@ -51,15 +34,15 @@ ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-DownJoypad::
+Flags:: ; 0 = Initialized joypad?
 	ds 1
-PressedJoypad:: ;7 START
-	ds 1        ;6 SELECT
-NextDrawLine::  ;5 B
-	ds 1        ;4 A
-	            ;3 DOWN
-	            ;2 UP
-	            ;1 LEFT
-	            ;0 RIGHT
+DownJoypad::;;;;;;7 START
+	ds 1         ;6 SELECT
+ReleasedJoypad::;;5 B
+	ds 1         ;4 A
+PressedJoypad::;;;3 DOWN
+	ds 1         ;2 UP
+NextDrawLine::;;;;1 LEFT
+	ds 1         ;0 RIGHT
 NextWriteLine::
 	ds 1
