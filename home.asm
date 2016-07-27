@@ -248,13 +248,10 @@ EmbeddedSetForwards::
 	ld [CursorPos + 1], a
 	ei
 MainLoop::
-	ld de, Text_HelloWorld1
+	ld de, Text_Eulaworld
 	call PrintText
 	call WaitForA
-	ld de, Text_HelloWorld2
-	call PrintText
-	call WaitForA
-	ld de, Text_HelloWorld3
+	ld de, Text_GameMenu
 	call PrintText
 .Finished
 	halt
@@ -619,5 +616,5 @@ ShiftLineUp::
 
 INCLUDE "text.asm"
 
-INCLUDE "memory.asm" ; This file needs to know what RAM type our cartridge has.
+INCLUDE "memory.asm" ; memory.asm needs to know what RAM type our cartridge has. Said information lies within home.asm.
 ;*** End Of File ***

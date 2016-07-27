@@ -1,11 +1,14 @@
-Text_HelloWorld1::
-	text "Hi, Earth!"
+Text_Eulaworld::
+	text "Eulaworld: version"
+	line "1.0. Licensed under"
+	line "the GNU general pub-"
+	text "lic license, ver. 3."
 	linedone
 
-Text_HelloWorld2::
-	text "Hello, world!"
-	linedone
-
-Text_HelloWorld3::
-	text "Greetings, universe!"
+Text_GameMenu::
+	text "┌~~~~~~~~~~~~~~~~~~┐"
+	text "| Load game        |"
+	text "| New game         |"
+	text "| Help             |"
+	text "└~~~~~~~~~~~~~~~~~~┘"
 	linedone
