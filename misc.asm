@@ -65,3 +65,9 @@ Random::
 
 	pop bc
 	ret
+
+Error::
+	; Work-in-progress.
+	halt
+	nop
+	jr Error

@@ -197,12 +197,7 @@ EmbeddedSetForwards::
 	cpl
 	ld [DownJoypad], a
 	call WaitForStart
-
-Error::
-	; Work-in-progress.
-	halt
-	nop
-	jr Error
+	jp MainMenu
 
 INCLUDE "farcall.asm"
 INCLUDE "joypad.asm"
@@ -211,6 +206,7 @@ INCLUDE "data.asm"
 INCLUDE "video.asm"
 INCLUDE "misc.asm"
 INCLUDE "text.asm"
+INCLUDE "mainmenu.asm"
 
 INCLUDE "memory.asm" ; memory.asm needs to know what RAM type our cartridge has. Said information lies within home.asm.
 ;*** End Of File ***
