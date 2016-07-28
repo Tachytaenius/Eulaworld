@@ -198,24 +198,6 @@ EmbeddedSetForwards::
 	ld [DownJoypad], a
 	call WaitForStart
 
-Random::
-	push bc
-
-	ld a, [rDIV]
-	ld b, a
-	ld a, [RandomAdd]
-	adc b
-	ld [RandomAdd], a
-
-	ld a, [rDIV]
-	ld b, a
-	ld a, [RandomSub]
-	sbc b
-	ld [RandomSub], a
-
-	pop bc
-	ret
-
 Error::
 	; Work-in-progress.
 	halt

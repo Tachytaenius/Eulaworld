@@ -47,3 +47,21 @@ DualMenu::
 	ld [BGTransferData + (SCRN_X_B * 14) + 3], a
 	call WaitUpdateBackground1
 	jr .loop
+
+Random::
+	push bc
+
+	ld a, [rDIV]
+	ld b, a
+	ld a, [RandomAdd]
+	adc b
+	ld [RandomAdd], a
+
+	ld a, [rDIV]
+	ld b, a
+	ld a, [RandomSub]
+	sbc b
+	ld [RandomSub], a
+
+	pop bc
+	ret
