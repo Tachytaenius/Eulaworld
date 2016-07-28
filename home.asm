@@ -2,12 +2,7 @@
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
-INCLUDE	"hardware.asm"
-INCLUDE "rst.asm"
-INCLUDE "bankmacros.asm"
-INCLUDE "charmap.asm"
-INCLUDE "textmacros.asm"
-INCLUDE "constants.asm"
+INCLUDE "macros.asm"
 
 SECTION	"Org $00", HOME[$00]
 RST_00:
