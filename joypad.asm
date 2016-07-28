@@ -17,15 +17,15 @@ GetJoypad::
 	and $0F
 	or b
 	cpl
-	
+
 	ld d, a
-	
+
 	ld b, a
 	ld a, [DownJoypad]
 	cpl
 	and b
 	ld [PressedJoypad], a
-	
+
 	ld a, [DownJoypad]
 	ld b, a
 	ld a, d
@@ -34,7 +34,7 @@ GetJoypad::
 	ld a, b
 	ld [ReleasedJoypad], a
 	ld a, d
-	ld [DownJoypad], a	
+	ld [DownJoypad], a
 	ret
 
 WaitForInput::

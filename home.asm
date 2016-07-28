@@ -81,7 +81,7 @@ SECTION	"Joypad IRQ Vector", HOME[$60]
 JOYPAD_VECT:
 	reti
 
-SECTION	"Start", HOME[$100]
+SECTION	"Header", HOME[$100]
 	nop
 	jp	Start
 
