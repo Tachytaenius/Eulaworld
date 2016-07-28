@@ -35,7 +35,7 @@ Text_Help::
 	text " |  12-Misc. Tips | "
 	text " |  13-Story Play | "
 	text " |                | "
-	text " └~~~~~~~~~~~~~~~~┘ "
+	text " └~~~~~UP DWN B A~┘ "
 	done
 
 Text_NewGame::
