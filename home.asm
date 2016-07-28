@@ -226,20 +226,8 @@ LoopGameChoice::
 	call ClearScreen
 	ld de, Text_GameMenu
 	call PrintText
-	xor a
-	ld [MenuSelection], a
-	ld a, "▶"
-	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
-LoopGameChoice_Inner::
-	call WaitForInput
-	and JOY_SELECT
-	jr nz, Change
-	ld a, [PressedJoypad]
-	and JOY_START
-	jr z, LoopGameChoice_Inner
-	ld a, [MenuSelection]
 	ld hl, GameMenuTable
-	rst JumpTable
+	call DualMenu
 	jr LoopGameChoice
 MainLoop::
 	halt
@@ -255,8 +243,34 @@ ClearScreen::
 	ld bc, BGTransferDataEnd - BGTransferData
 	ld hl, BGTransferData
 	jp SetForwards
+ 
+DualMenu::
+	xor a
+	ld [MenuSelection], a
+	ld a, "▶"
+	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
+	call WaitUpdateBackground1
+	ld a, h
+	ld [Buffer2], a
+	ld a, l
+	ld [Buffer2 + 1], a
+.loop
+	call WaitForInput
+	ld a, [PressedJoypad]
+	and JOY_SELECT
+	jr nz, .change
+	ld a, [PressedJoypad]
+	and JOY_START
+	jr z, .loop
+	ld a, [Buffer2]
+	ld h, a
+	ld a, [Buffer2 + 1]
+	ld l, a
+	ld a, [MenuSelection]
+	rst JumpTable
+	ret
 
-Change::
+.change
 	ld hl, MenuSelection
 	bit 0, [hl]
 	jr nz, .toggleOff
@@ -265,7 +279,8 @@ Change::
 	ld [BGTransferData + (SCRN_X_B * 14) + 3], a
 	xor a ; ld a, " "
 	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
-	jr LoopGameChoice_Inner
+	call WaitUpdateBackground1
+	jr .loop
 
 .toggleOff
 	res 0, [hl]
@@ -273,18 +288,21 @@ Change::
 	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
 	xor a ; ld a, " "
 	ld [BGTransferData + (SCRN_X_B * 14) + 3], a
-	jr LoopGameChoice_Inner
+	call WaitUpdateBackground1
+	jr .loop
 
 LoadGame::
 	call ClearScreen
 	ld de, Text_LoadGame
 	call PrintText
+	call WaitUpdateBackground1
 	jp WaitForStart
 
 NewGame::
 	call ClearScreen
 	ld de, Text_NewGame
 	call PrintText
+	call WaitUpdateBackground1
 	jp WaitForStart
 
 WaitForInput::
@@ -296,6 +314,7 @@ WaitForInput::
 	ld a, [PressedJoypad]
 	and $FF
 	jr z, .loop
+	call Random
 	ret
 
 WaitForStart::
@@ -312,6 +331,7 @@ WaitForStart::
 	ld a, [PressedJoypad]
 	and JOY_START
 	jr z, .loop
+	call Random
 	ret
 
 WaitForAllButtonsToBeReleased::
@@ -321,6 +341,7 @@ WaitForAllButtonsToBeReleased::
 	ld a, [DownJoypad]
 	and a
 	jr nz, WaitForAllButtonsToBeReleased
+	call Random
 	ret
 
 UpdateBackground1::
@@ -560,13 +581,34 @@ VBlank::
 	push de
 	ld a, $C0
 	call WaitDMADoneDestination
+	ld a, [Flags]
+	bit 1, a
+	jr z, .skip
+	push af
 	call UpdateBackground1
+	call UpdateBackground1
+	pop af
+	ld hl, Flags
+	res 1, [hl]
+.skip
 	pop de
 	pop bc
 	pop hl
 	pop af
 	reti
-VBlankEnd::
+
+WaitUpdateBackground1::
+	push hl
+rept 9
+	ld hl, Flags
+	set 1, [hl]
+	halt
+	nop
+	halt
+	nop
+endr
+	pop hl
+	ret
 
 Font::
 	INCBIN "font.1bpp"
@@ -608,7 +650,7 @@ GetJoypad::
 	ld a, b
 	ld [ReleasedJoypad], a
 	ld a, d
-	ld [DownJoypad], a
+	ld [DownJoypad], a	
 	ret
 
 PrintText::
@@ -645,7 +687,7 @@ PrintText::
 	ld [CursorPos], a
 	ld a, l
 	ld [CursorPos + 1], a
-	ret
+	jp WaitUpdateBackground1
 
 ShiftLineUp::
 	ld hl, BGTransferDataGutter
@@ -656,6 +698,24 @@ ShiftLineUp::
 	ld bc, 20
 	ld hl, BGTransferDataEnd - 20
 	jp SetForwards
+
+Random::
+	push bc
+
+	ld a, [rDIV]
+	ld b, a
+	ld a, [RandomAdd]
+	adc b
+	ld [RandomAdd], a
+
+	ld a, [rDIV]
+	ld b, a
+	ld a, [RandomSub]
+	sbc b
+	ld [RandomSub], a
+
+	pop bc
+	ret
 
 INCLUDE "text.asm"
 

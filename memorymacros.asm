@@ -1,9 +1,9 @@
 Entity: MACRO
-	ds 1 ; ID
-	ds 2 ; HP
-	ds 1 ; EP
-	ds 1 ; MP
-	ds 1 ; CP
+	ds 1 ; Identity
+	ds 2 ; Health
+	ds 1 ; Energy
+	ds 1 ; Mana
+	ds 1 ; Chakra
 	ds 8 ; Inventory
 	ds 1 ; Abilities
 	ds 1 ; Flags

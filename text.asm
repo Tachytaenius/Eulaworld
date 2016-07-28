@@ -4,19 +4,18 @@ Text_Eulaworld::
 	line "the GNU general pub-"
 	text "lic license, ver. 3."
 	line "Push start."
-	break
 	linedone
 
 Text_GameMenu::
-	text "Select to choose,"
-	line "start to confirm."
+	text "What do you want to"
+	line "do?"
 	break
 	line " ┌~Game Menu~~~~~~┐ "
 	text " |                | "
 	text " |  Load game     | "
 	text " |  New game      | "
 	text " |                | "
-	text " └~~~~~~~~~~~~~~~~┘ "
+	text " └~~~~~~~~SEL STRT┘ "
 	done
 
 Text_Help::
@@ -52,4 +51,11 @@ Text_NewGame::
 Text_LoadGame::
 	text "Load your saved"
 	line "game?"
-	linedone
+	break
+	line " ┌~Confirmation~~~┐ "
+	text " |                | "
+	text " |  Yes           | "
+	text " |  No            | "
+	text " |                | "
+	text " └~~~~~~~~SEL STRT┘ "
+	done

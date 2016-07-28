@@ -31,11 +31,13 @@ CursorPos::
 	ds 2
 Buffer::
 	ds 2
+Buffer2::
+	ds 2
 ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-Flags:: ; 0 = Initialized joypad?
+Flags:: ; 1 = Update Background 1? 0 = Initialized joypad?
 	ds 1
 DownJoypad::;;;;;;7 START
 	ds 1         ;6 SELECT
@@ -46,4 +48,8 @@ PressedJoypad::;;;3 DOWN
 NextDrawLine:    ;1 LEFT
 	ds 1         ;0 RIGHT
 NextWriteLine::
+	ds 1
+RandomAdd::
+	ds 1
+RandomSub::
 	ds 1
