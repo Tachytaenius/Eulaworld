@@ -196,9 +196,15 @@ EmbeddedSetForwards::
 	cpl
 	ld [DownJoypad], a
 	call WaitForStart
+.loop
+	ld b, b
+	ld de, BGTransferData
+	call ConvertNumberHL
+	call WaitUpdateBackground1
+	jr .loop
 	jp MainMenu
 
-INCLUDE "farcall.asm"
+INCLUDE "far.asm"
 INCLUDE "joypad.asm"
 INCLUDE "update.asm"
 INCLUDE "data.asm"
@@ -206,6 +212,8 @@ INCLUDE "video.asm"
 INCLUDE "misc.asm"
 INCLUDE "text.asm"
 INCLUDE "mainmenu.asm"
+
+INCLUDE "main.asm"
 
 INCLUDE "memory.asm" ; memory.asm needs to know what RAM type our cartridge has. Said information lies within home.asm.
 ;*** End Of File ***

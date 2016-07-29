@@ -23,5 +23,12 @@ Farcall::
 	ld a, [Buffer + 1]
 	ld c, a
 	ret
+
+Farjump::
+; Jump to a:hl.
+; Preserves other registers.
+; The true start of the routine is at RST_00.
+	rst BankSwitch
+
 JumpHL::
 	jp hl

@@ -4,6 +4,11 @@
 
 NULL			EQU %00000000
 
+; What bits are used for the X, Y an Z positions?
+COORD_X			EQU %11100000
+COORD_Y			EQU %00011000
+COORD_Z			EQU %00000111
+
 ; Where is the stack supposed to start?
 StackStart		EQU $D000
 
@@ -22,6 +27,9 @@ MAX_BANK_X		EQU 3
 MAX_BANK_Y		EQU 2
 MAX_BANK_Z		EQU 5
 
+; The actual number of sectors in a chunk.
+CHUNK_SIZE		EQU MAX_BANK_X * MAX_BANK_Y * MAX_BANK_Z
+
 ; The dimensions of the game world in WRAM banks, or chunks.
 MAX_CHUNK_X		EQU 3
 MAX_CHUNK_Y		EQU 1
@@ -34,3 +42,9 @@ MAX_TOTAL_Z		EQU MAX_BANK_Z * MAX_CHUNK_Z
 
 ; The actual number of sectors in the game world.
 FINAL_SECTORS	EQU MAX_TOTAL_X * MAX_TOTAL_Y * MAX_TOTAL_Z
+
+; How big is an entity?
+ENTITY_SIZE		EQU 16
+
+; How big is a sector?
+SECTOR_SIZE		EQU (ENTITY_SIZE * 7) + 2

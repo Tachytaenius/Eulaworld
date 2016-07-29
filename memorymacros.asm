@@ -15,7 +15,7 @@ Entity: MACRO
 
 Sector: MACRO
 	ds 1 ;XYZ
-	ds 1 ;Flags
+	ds 1 ;Biome
 	Entity
 	Entity
 	Entity
@@ -26,12 +26,11 @@ Sector: MACRO
 	ENDM
 
 Contents: MACRO
+	; Where is the player?
+	ds 1 ; XYZ
 	; The sector we want.
 	ds 1 * FINAL_SECTORS ; XYZ
 	; The memory address of it.
 	ds 1 * FINAL_SECTORS ; Bank
 	ds 2 * FINAL_SECTORS ; Address
-	; Who is the player?
-	ds 1 ; Bank
-	ds 2 ; Address
 	ENDM

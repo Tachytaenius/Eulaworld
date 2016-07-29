@@ -2,14 +2,12 @@
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
-farcall: MACRO
-	ld a, BANK(\1)
-	ld hl, \1
-	rst FarCall
-	ENDM
+MainLoop::
+	call GetAddressOfPlayerXYZ
+	jr MainLoop
 
-farjump: MACRO
-	ld a, BANK(\1)
-	ld hl, \1
-	jp Farjump
-	ENDM
+GetAddressOfPlayerXYZ::
+
+	and COORD_X
+	
+	ret

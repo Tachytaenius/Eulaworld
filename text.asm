@@ -50,7 +50,14 @@ Text_NewGame::
 	text "will need to save"
 	line "while playing this"
 	line "one."
-	linedone
+	break
+	line " ┌~Confirmation~~~┐ "
+	text " |                | "
+	text " |  No            | "
+	text " |  Yes           | "
+	text " |                | "
+	text " └~~~~~~~~SEL STRT┘ "
+	done
 	
 Text_LoadGame::
 	text "Load your saved"

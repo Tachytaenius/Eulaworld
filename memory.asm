@@ -15,12 +15,13 @@ BGTransferData::
 BGTransferDataEnd::
 W_Contents::
 	Contents
-MenuSelection::
-	ds 1
+Player::
+	Entity
 
 ; StackStart EQU $D000
 
 SECTION "WRAM 1", WRAMX
+Sectors::
 REPT 10
 	Sector
 	Sector
@@ -56,4 +57,10 @@ NextWriteLine::
 RandomAdd::
 	ds 1
 RandomSub::
+	ds 1
+MenuSelection::
+	ds 1
+Time::
+	ds 1
+Date::
 	ds 1
