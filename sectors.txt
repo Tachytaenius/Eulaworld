@@ -1,0 +1,27 @@
+Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+Licensed under the GNU General Public License ver. 3.
+Refer to file LICENSE for information on the GPL 3.
+
+Entity:
+	Byte	1	Identity
+	Byte	1	Hits
+	Byte	1	Energy
+	Byte	1	Mana
+	Byte	1	Chakra
+	Byte	1	Flags
+	Byte	1	Equipment
+	Byte	1	Data
+
+Sector:
+	Byte	1	Biome
+	Byte	1	Flags
+	Byte	1	Flags
+	Byte	1	Resource ID
+	Byte	1	Resource count
+	Byte	1	Resource ID
+	Byte	1	Resource count
+	Byte	1	Auras
+	Entity	7	Objects
+
+A bank's worth of sectors is 8 by 4 sectors, times 2 for the underground.
+There are 16 by 8 by 2 sectors in total, because there are 2 x 2 bank's worths in the game world.

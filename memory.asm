@@ -1,8 +1,6 @@
-; Copyright	2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
-
-INCLUDE "memorymacros.asm"
 
 SECTION "WRAM 0", WRAM0
 OAMTransferData::
@@ -13,20 +11,12 @@ BGTransferDataGutter::
 BGTransferData::
 	ds $168
 BGTransferDataEnd::
-W_Contents::
-	Contents
+BGTransferData2::
+	ds 80
+BGTransferData2End::
 Player::
-	Entity
-
+	ds 1 
 ; StackStart EQU $D000
-
-SECTION "WRAM 1", WRAMX
-Sectors::
-REPT 10
-	Sector
-	Sector
-	Sector
-ENDR
 
 SECTION "HRAM", HRAM
 WaitDMADoneDestination::
@@ -34,15 +24,19 @@ WaitDMADoneDestination::
 WaitDMADoneDestinationEnd::
 CursorPos::
 	ds 2
+MiniBuffer::
+	ds 1
 Buffer::
 	ds 2
 Buffer2::
 	ds 2
+MiniBuffer2::
+	ds 1
 ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-Flags:: ; 1 = Update Background 1? 0 = Initialized joypad?
+Flags:: ; 3 = Not a Game Boy Colour? 2 = Update Background 1? 1 = Update Background 1? 0 = Initialized joypad?
 	ds 1
 DownJoypad::;;;;;;7 START
 	ds 1         ;6 SELECT
@@ -63,4 +57,8 @@ MenuSelection::
 Time::
 	ds 1
 Date::
+	ds 1
+XYZ::
+	ds 1
+Skippable::
 	ds 1

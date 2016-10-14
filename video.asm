@@ -1,4 +1,4 @@
-; Copyright	2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -39,18 +39,22 @@ VBlank::
 	ld a, [Flags]
 	bit 1, a
 	jr z, .skip
-	push af
-	call UpdateBackground1
-	call UpdateBackground1
-	pop af
-	ld hl, Flags
-	res 1, [hl]
+	bit 2, a
+	jr nz, .two
+	call UpdateBackground
+	call UpdateBackground
+
 .skip
 	pop de
 	pop bc
 	pop hl
 	pop af
 	reti
+
+.two
+	call UpdateBackground2
+	call UpdateBackground2
+	jr .skip
 
 ShiftLineUp::
 	ld hl, BGTransferDataGutter
@@ -66,7 +70,8 @@ ClearScreen::
 	ld d, " "
 	ld bc, BGTransferDataEnd - BGTransferData
 	ld hl, BGTransferData
-	jp SetForwards
+	call SetForwards
+	jp WaitUpdateBackground
 
 PrintText::
 	ld a, [CursorPos]
@@ -102,4 +107,4 @@ PrintText::
 	ld [CursorPos], a
 	ld a, l
 	ld [CursorPos + 1], a
-	jp WaitUpdateBackground1
+	jp WaitUpdateBackground

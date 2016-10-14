@@ -2,8 +2,6 @@
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
-text		EQUS "db "
-line 		EQUS "db $60, "
-break 		EQUS "db $60"
-done 		EQUS "db $61"
-linedone 	EQUS "db $60, $61"
+RGBSet: MACRO
+	dw ((\3 >> 3) << 10) + ((\2 >> 3) << 5) + (\1 >> 3)
+ENDM

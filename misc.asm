@@ -1,4 +1,4 @@
-; Copyright	2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -11,7 +11,7 @@ DualMenu::
 	ld [MenuSelection], a
 	ld a, "▶"
 	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
-	call WaitUpdateBackground1
+	call WaitUpdateBackground
 	ld a, h
 	ld [Buffer2], a
 	ld a, l
@@ -40,7 +40,7 @@ DualMenu::
 	ld [BGTransferData + (SCRN_X_B * 14) + 3], a
 	xor a ; ld a, " "
 	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
-	call WaitUpdateBackground1
+	call WaitUpdateBackground
 	jr .loop
 
 .toggleOff
@@ -49,7 +49,7 @@ DualMenu::
 	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
 	xor a ; ld a, " "
 	ld [BGTransferData + (SCRN_X_B * 14) + 3], a
-	call WaitUpdateBackground1
+	call WaitUpdateBackground
 	jr .loop
 
 Random::
@@ -75,3 +75,23 @@ Error::
 	halt
 	nop
 	jr Error
+
+SbcHlBc::
+	push bc
+	push af
+	ld a, b
+	cpl
+	ld b, a
+	ld a, c
+	cpl
+	ld c, a
+	inc bc
+	call c, .carry
+	pop af
+	add hl, bc
+	pop bc
+	ret
+
+.carry
+	inc bc
+	ret

@@ -1,4 +1,4 @@
-; Copyright	2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -35,22 +35,40 @@ CopyDoubleForwards::
 	dec bc
 	jr CopyDoubleForwards
 
-;	CopyBackwards::
-;		;copy bc bytes backward from hl to de
-;		ld a, b
-;		or c
-;		ret z
-;		ld a, [hld]
-;		ld [de], a
-;		dec de
-;		inc bc
-;		jr CopyBackwards
+;CopyBackwards::
+;	;copy bc bytes backward from hl to de
+;	ld a, b
+;	or c
+;	ret z
+;	ld a, [hld]
+;	ld [de], a
+;	dec de
+;	inc bc
+;	jr CopyBackwards
+
+CopyForwardsSkip::
+	;copy bc bytes forward from de to hl skipping a byte if it's equal to [Skippable]
+	ld a, b
+	or c
+	ret z
+
+	push bc
+	ld a, [de]
+	inc de ; This has to happen after ld a, [de], of course.
+	ld b, a
+	ld a, [Skippable]
+	cp b
+	pop bc
+	dec bc ; Don't forget to decrement the counter!!
+	jr nz, CopyForwardsSkip
+	ld [hli], a ; Wait... do I want to not move hl?
+	jr CopyForwardsSkip
 
 ConvertNumberHLPoint::
 	ld a, [hl]
 ConvertNumberA::
-	ld d, 0
-	ld e, a
+	ld h, 0
+	ld l, a
 ConvertNumberHL::
 	; Get the number in hl as text in de
 	ld bc, -10000
@@ -68,23 +86,7 @@ ConvertNumberHL::
 	inc a
 	add hl, bc
 	jr c, .two
-	push bc
-	push af
-	ld a, b
-	cpl
-	ld b, a
-	ld a, c
-	cpl
-	ld c, a
-	inc bc
-	call c, .carry
-	pop af
-	add hl, bc
-	pop bc
+	call SbcHlBc
 	ld [de], a
 	inc de
-	ret
-
-.carry
-	inc bc
 	ret

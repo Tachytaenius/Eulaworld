@@ -1,4 +1,4 @@
-; Copyright	2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -136,6 +136,9 @@ SECTION	"Header", HOME[$100]
 
 SECTION "Program Start", HOME[$0150]
 Start::
+	ld sp, StackStart
+	push af
+	ld sp, $FFFF
 	di
 	ld bc, $2000
 	ld hl, $C000
@@ -149,9 +152,11 @@ EmbeddedSetForwards::
 	dec bc
 	jr EmbeddedSetForwards
 .done
-	ld a, 1
+	xor a
+	ld [$3000], a
+	inc a
 	ld [$2000], a
-	ld sp, StackStart
+	ld sp, StackStart - 2
 	call StopLCD
 	xor a
 	ld d, a
@@ -179,6 +184,25 @@ EmbeddedSetForwards::
 	ld hl, _VRAM
 	ld bc, FontEnd - Font
 	call CopyDoubleForwards
+	pop af
+	cp $11
+	jr z, .non_CGB
+	
+	ld a, 1
+	ld [WRAMBank], a
+	ld [rSVBK], a
+
+	ld a, $80
+	ld [rBCPS], a
+	ld bc, $4069
+	ld hl, Palettes
+.loop
+	ld a, [hli]
+	ld [c], a
+	dec b
+	jr nz, .loop
+
+.returnfromskip
 	call StartLCD
 	xor a
 	ld [rIF], a
@@ -190,19 +214,33 @@ EmbeddedSetForwards::
 	ld a, l
 	ld [CursorPos + 1], a
 	ei
+
+	; call WashingMashineJoke
+
+	; If you need to test something quickly, put it here.
+
+	
+
 	ld de, Text_Eulaworld
 	call PrintText
 	xor a
 	cpl
 	ld [DownJoypad], a
 	call WaitForStart
-.loop
-	ld b, b
-	ld de, BGTransferData
-	call ConvertNumberHL
-	call WaitUpdateBackground1
-	jr .loop
 	jp MainMenu
+
+.non_CGB
+	ld hl, Flags
+	set 3, [hl]
+	jr .returnfromskip
+
+Palettes::
+REPT 8
+	RGBSet $FF, $FF, $FF
+	RGBSet $AA, $AA, $AA
+	RGBSet $55, $55, $55
+	RGBSet $00, $00, $00
+ENDR
 
 INCLUDE "far.asm"
 INCLUDE "joypad.asm"
@@ -212,8 +250,7 @@ INCLUDE "video.asm"
 INCLUDE "misc.asm"
 INCLUDE "text.asm"
 INCLUDE "mainmenu.asm"
-
-INCLUDE "main.asm"
+INCLUDE "washingmachinejoke.asm"
 
 INCLUDE "memory.asm" ; memory.asm needs to know what RAM type our cartridge has. Said information lies within home.asm.
 ;*** End Of File ***
