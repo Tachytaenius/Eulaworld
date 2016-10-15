@@ -4,6 +4,7 @@
 
 PreMainLoop::
 	call GetXYZAddressInHLAndChangeBank
+	call DescribeSector
 MainLoop::
 	call WaitForInput
 	ld a, [PressedJoypad]
@@ -33,7 +34,7 @@ MainLoop::
 	call Help
 	jr MainLoop
 
-.ThisButtonDoesNothingYet	
+.ThisButtonDoesNothingYet
 	ld de, Text_ThisButtonDoesNothingYet
 	jp PrintText
 
@@ -218,7 +219,7 @@ GetXYZAddressInHLAndChangeBank::
 	ret
 
 .common
-	REPT 6
+REPT 6
 	add hl, hl ; Multiply by 64 by shifting left 6 times.
 ENDR
 	ld bc, $D000
@@ -256,8 +257,13 @@ HelpLoop::
 	jr nz, .right
 	ld a, [PressedJoypad]
 	and JOY_B
-	ret nz
+	jr nz, .quit
 	jr HelpLoop
+
+.quit
+	call ClearScreen
+	call GetXYZAddressInHLAndChangeBank
+	jp DescribeSector
 
 .left
 	ld a, [MenuSelection]
@@ -313,3 +319,223 @@ StoryPlay::
 	ld de, Text_StoryPlay
 	call PrintText
 	jr HelpLoop
+
+DescribeSector::
+	ld a, [Flags]
+	set 4, a
+	ld [Flags], a
+
+	; Dealing with the biome.
+	ld a, [XYZ]
+	bit 7, a
+	ld a, [hl]
+	jr z, .skip
+	or %00001000
+.skip
+	push hl
+	push af
+	ld de, Text_YouAreIn
+	call PrintText
+	pop af
+	ld hl, .biome_table
+	jp JumpTable ; HL is popped later.
+
+.biome_table
+	dw .plains
+	dw .forest
+	dw .sand
+	dw .ice
+	dw .savanna
+	dw .ocean
+	dw .jungle
+	dw .heaven
+	dw .diorite
+	dw .limestone
+	dw .obsidian
+	dw .ice_
+	dw .granite
+	dw .ocean_
+	dw .andesite
+	dw .hell
+
+.plains
+	pop hl
+	ld de, Text_Plains
+	call PrintText
+	jp .cont
+
+.forest
+	pop hl
+	ld de, Text_Forest
+	call PrintText
+	jr .cont
+
+.sand
+	pop hl
+	ld de, Text_Sand
+	call PrintText
+	jr .cont
+
+.ice
+	pop hl
+	ld de, Text_Ice
+	call PrintText
+	jr .cont
+
+.savanna
+	pop hl
+	ld de, Text_Savanna
+	call PrintText
+	jr .cont
+
+.ocean
+	pop hl
+	ld de, Text_Ocean
+	call PrintText
+	jr .cont
+
+.jungle
+	pop hl
+	ld de, Text_Jungle
+	call PrintText
+	jr .cont
+
+.heaven
+	pop hl
+	ld de, Text_Heaven
+	call PrintText
+	jr .cont
+
+.diorite
+	pop hl
+	ld de, Text_Diorite
+	call PrintText
+	jr .cont
+
+.limestone
+	pop hl
+	ld de, Text_Limestone
+	call PrintText
+	jr .cont
+
+.obsidian
+	pop hl
+	ld de, Text_Obsidian
+	call PrintText
+	jr .cont
+
+.ice_
+	pop hl
+	ld de, Text_Ice_
+	call PrintText
+	jr .cont
+
+.granite
+	pop hl
+	ld de, Text_Granite
+	call PrintText
+	jr .cont
+
+.ocean_
+	pop hl
+	ld de, Text_Ocean_
+	call PrintText
+	jr .cont
+
+.andesite
+	pop hl
+	ld de, Text_Andesite
+	call PrintText
+	jr .cont
+
+.hell
+	pop hl
+	ld de, Text_Hell
+	call PrintText
+
+.cont
+	ld a, [Flags]
+	res 4, a
+	ld [Flags], a
+	call WaitUpdateBackground
+	ret
+
+Text_YouAreIn::
+	text "You are in "
+	done
+
+Text_Plains::
+	text "a field."
+	linedone
+
+Text_Forest::
+	text "a forest."
+	done
+
+Text_Sand::
+	text "a sandy"
+	line "desert."
+	linedone
+
+Text_Ice::
+	text "an icy"
+	line "desert."
+	linedone
+
+Text_Savanna::
+	text "a dry"
+	line "savanna."
+	linedone
+
+Text_Ocean::
+	text "the sea."
+	linedone
+
+Text_Jungle::
+	text "a jungle."
+	done
+
+Text_Heaven::
+	text "an aether"
+	text "biome."
+	linedone
+
+Text_Diorite::
+	text "a diorite"
+	text "cave."
+	linedone
+
+Text_Limestone::
+	text "a limest-"
+	line "one cave."
+	linedone
+
+Text_Obsidian::
+	text "an obsid-"
+	text "ian cave."
+	linedone
+
+Text_Ice_::
+	text "an ice"
+	line "cave."
+	linedone
+
+Text_Granite::
+	text "a granite"
+	text "cave."
+	linedone
+
+Text_Ocean_::
+	text "the deep"
+	line "ocean."
+	linedone
+
+Text_Andesite::
+	text "an andes-"
+	text "ite cave."
+	linedone
+
+Text_Hell::
+	text "a nether"
+	line "biome."
+	linedone

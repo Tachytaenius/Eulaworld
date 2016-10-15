@@ -14,7 +14,7 @@ Entity:
 
 Sector:
 	Byte	1	Biome
-	Byte	1	Flags
+	Byte	1	House Information
 	Byte	1	Flags
 	Byte	1	Resource ID
 	Byte	1	Resource count
@@ -25,3 +25,47 @@ Sector:
 
 A bank's worth of sectors is 8 by 4 sectors, times 2 for the underground.
 There are 16 by 8 by 2 sectors in total, because there are 2 x 2 bank's worths in the game world.
+
+Biomes:
+ID	SURFACE		UNDERGROUND
+00	Plains		Diorite Caves
+01	Forest		Limestone Caves
+02	Hot Desert	Obsidian Caves
+03	Cold Desert	Ice Caves
+04	Savanna		Granite Caves
+05	Ocean		Deep Ocean
+06	Jungle		Andesite Caves
+07	Heaven		Hell
+
+House Information:
+BIT	MEANING
+0	Contains a house
+1	House is stone (1) or wood (0)
+2	House contains a bed
+3	House contains a table & chair
+4	House contains a workbench
+5	House contains a mill
+6	House contains a stone grinder
+7	House contains a furnace
+
+Flags:
+BIT	MEANING
+0	Has a hole
+1	N/A
+2	N/A
+3	N/A
+4	N/A
+5	N/A
+6	N/A
+7	N/A
+
+Resources:
+ID	ITEM
+00	Wood
+01	Copper
+02	Iron
+03	Gold
+04	Diamond
+05	Arcanite
+06	Wheat
+07	Sugar Cane
