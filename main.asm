@@ -29,7 +29,8 @@ MainLoop::
 	call nz, .ThisButtonDoesNothingYet
 	ld a, [PressedJoypad]
 	and JOY_START
-	call nz, .ThisButtonDoesNothingYet
+	jr z, MainLoop
+	call Help
 	jr MainLoop
 
 .ThisButtonDoesNothingYet	
@@ -57,7 +58,7 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_South
 	call PrintText
-	jr PreMainLoop
+	jp PreMainLoop
 
 .MoveWest
 	ld a, [XYZ]
@@ -109,6 +110,8 @@ Text_WorldEnd::
 	linedone
 
 PrintPosition::
+	ld hl, Flags
+	set 4, [hl]
 	ld a, $61
 	ld [MiniBuffer2], a
 	ld a, [XYZ]
@@ -129,8 +132,23 @@ PrintPosition::
 	call ConvertNumberA
 	ld de, .text2
 	call PrintText
+
+	ld a, [XYZ]
+	and COORD_Z
+	cp 10
+	jr nc, .double_figures
+	ld de, Buffer2 + 1
+	call PrintText
+	ld hl, Flags
+	res 4, [hl]
+	ld de, .text3
+	jp PrintText
+
+.double_figures
 	ld de, Buffer2
 	call PrintText
+	ld hl, Flags
+	res 4, [hl]
 	ld de, .text3
 	jp PrintText
 
@@ -164,11 +182,7 @@ GetXYZAddressInHLAndChangeBank::
 	sub 192
 	ld h, 0
 	ld l, a
-REPT 6
-	add hl, hl ; Multiply by 64 by shifting left 6 times.
-ENDR
-	ld bc, $D000
-	add hl, bc
+	call .common
 	ld a, 4
 	ld [WRAMBank], a
 	ld [rSVBK], a
@@ -177,11 +191,7 @@ ENDR
 .first_quarter
 	ld h, 0
 	ld l, a
-REPT 6
-	add hl, hl ; Multiply by 64 by shifting left 6 times.
-ENDR
-	ld bc, $D000
-	add hl, bc
+	call .common
 	ld a, 1
 	ld [WRAMBank], a
 	ld [rSVBK], a
@@ -191,11 +201,7 @@ ENDR
 	sub 64
 	ld h, 0
 	ld l, a
-REPT 6
-	add hl, hl ; Multiply by 64 by shifting left 6 times.
-ENDR
-	ld bc, $D000
-	add hl, bc
+	call .common
 	ld a, 2
 	ld [WRAMBank], a
 	ld [rSVBK], a
@@ -205,12 +211,105 @@ ENDR
 	sub 128
 	ld h, 0
 	ld l, a
-REPT 6
-	add hl, hl ; Multiply by 64 by shifting left 6 times.
-ENDR
-	ld bc, $D000
-	add hl, bc
+	call .common
 	ld a, 3
 	ld [WRAMBank], a
 	ld [rSVBK], a
 	ret
+
+.common
+	REPT 6
+	add hl, hl ; Multiply by 64 by shifting left 6 times.
+ENDR
+	ld bc, $D000
+	add hl, bc
+	ret
+
+HelpTable:: ; 0 - 13
+	dw HelpIndex
+	dw BasicPlay
+	dw Inventory
+	dw Resources
+	dw Building
+	dw Combat
+	dw Exploring
+	dw Crafting
+	dw TheAbyss
+	dw Bestiary
+	dw Villages
+	dw Occupation
+	dw MiscTips
+	dw StoryPlay
+
+Help::
+	xor a
+	ld [MenuSelection], a
+	jr HelpIndex
+
+HelpLoop::
+	call WaitForInput
+	ld a, [PressedJoypad]
+	and JOY_LEFT
+	jr nz, .left
+	ld a, [PressedJoypad]
+	and JOY_RIGHT
+	jr nz, .right
+	ld a, [PressedJoypad]
+	and JOY_B
+	ret nz
+	jr HelpLoop
+
+.left
+	ld a, [MenuSelection]
+	cp 0
+	jr z, .wrapToEnd
+	dec a
+	jr .do
+
+.wrapToEnd
+	ld a, 13
+	jr .do
+
+.wrapToStart
+	ld a, 0
+	jr .do
+
+.right
+	ld a, [MenuSelection]
+	cp 13
+	jr z, .wrapToStart
+	inc a
+
+.do
+	ld [MenuSelection], a
+	ld hl, HelpTable
+	jp JumpTable
+
+HelpIndex::
+	call ClearScreen
+	ld de, Text_HelpIndex
+	call PrintText
+	jr HelpLoop
+
+BasicPlay::
+	call ClearScreen
+	ld de, Text_BasicPlay
+	call PrintText
+	jr HelpLoop
+
+Inventory::
+Resources::
+Building::
+Combat::
+Exploring::
+Crafting::
+TheAbyss::
+Bestiary::
+Villages::
+Occupation::
+MiscTips::
+StoryPlay::
+	call ClearScreen
+	ld de, Text_StoryPlay
+	call PrintText
+	jr HelpLoop

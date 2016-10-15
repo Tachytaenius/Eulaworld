@@ -22,26 +22,6 @@ Text_GameMenu::
 	text " └~~~~~~~~SEL STRT┘ "
 	done
 
-Text_Help::
-	text " ┌~Help Index~~~~~┐ "
-	text " |                | "
-	text " |  1--Basic Play | "
-	text " |  2--Inventory  | "
-	text " |  3--Resources  | "
-	text " |  4--Building   | "
-	text " |  5--Combat     | "
-	text " |  6--Exploring  | "
-	text " |  7--Crafting   | "
-	text " |  8--The Abyss  | "
-	text " |  9--Bestiary   | "
-	text " |  10-Villages   | "
-	text " |  11-Occupation | "
-	text " |  12-Misc. Tips | "
-	text " |  13-Story Play | "
-	text " |                | "
-	text " └~~~~~UP DWN B A~┘ "
-	done
-
 Text_NewGame::
 	text "Are you sure you"
 	line "want to start a new"
@@ -70,3 +50,5 @@ Text_LoadGame::
 	text " |                | "
 	text " └~~~~~~~~SEL STRT┘ "
 	done
+
+INCLUDE "help.asm"

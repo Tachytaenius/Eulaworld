@@ -8,7 +8,15 @@ NewGame::
 	ld hl, $D000
 	call CopyForwards
 	call ClearScreen
+	ld a, 7 | (3 << 4)
+	ld [XYZ], a
+	ld de, Text_GameStart
+	call PrintText
 	jp PreMainLoop
+
+Text_GameStart::
+	text "Push start for help."
+	done
 
 TestMap::
 REPT 64

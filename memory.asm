@@ -36,7 +36,7 @@ ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-Flags:: ; 3 = Not a Game Boy Colour? 2 = Update Background 1? 1 = Update Background 1? 0 = Initialized joypad?
+Flags:: ; 4 = Update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 1? 1 = Update Background 1? 0 = Initialized joypad?
 	ds 1
 DownJoypad::;;;;;;7 START
 	ds 1         ;6 SELECT

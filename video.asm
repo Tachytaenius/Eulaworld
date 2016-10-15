@@ -107,4 +107,7 @@ PrintText::
 	ld [CursorPos], a
 	ld a, l
 	ld [CursorPos + 1], a
-	jp WaitUpdateBackground
+	ld hl, Flags
+	bit 4, [hl]
+	jp z, WaitUpdateBackground
+	ret
