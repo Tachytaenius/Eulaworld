@@ -27,7 +27,7 @@ MainLoop::
 	call nz, .ThisButtonDoesNothingYet
 	ld a, [PressedJoypad]
 	and JOY_SELECT
-	call nz, .ThisButtonDoesNothingYet
+	jr nz, .ToggleDepth
 	ld a, [PressedJoypad]
 	and JOY_START
 	jr z, MainLoop
@@ -87,7 +87,76 @@ MainLoop::
 .end
 	ld de, Text_WorldEnd
 	call PrintText
+	jp MainLoop
+
+.ToggleDepth
+	call GetXYZAddressInHLAndChangeBank
+	inc hl
+	inc hl
+	ld a, [XYZ]
+	bit 7, a
+	jr nz, .underground
+	bit 0, [hl]
+	jr nz, .yes_overground
+;.no_overground
+	ld de, Text_NoSurface
+	call PrintText
+	jp MainLoop
+
+.yes_overground
+	ld de, Text_YesSurface
+	call PrintText
+	ld a, [XYZ]
+	set 7, a
+	ld [XYZ], a
 	jp PreMainLoop
+
+.underground
+	ld a, [WRAMBank]
+	push af
+	dec a
+	dec a
+	ld [rSVBK], a
+	bit 0, [hl]
+	jr nz, .yes_underground
+;no_underground
+	push af
+	ld [rSVBK], a
+	ld de, Text_NoUnderground
+	call PrintText
+	jp MainLoop
+
+.yes_underground
+	push af
+	ld [rSVBK], a
+	ld de, Text_YesUnderground
+	call PrintText
+	ld a, [XYZ]
+	res 7, a
+	ld [XYZ], a
+	jp PreMainLoop
+
+Text_NoSurface::
+	text "There is no way"
+	line "to go underground"
+	line "here."
+	linedone
+
+Text_YesSurface::
+	text "You descend into the"
+	text "depths..."
+	linedone
+
+Text_NoUnderground
+	text "There is no way"
+	line "to return to the"
+	line "surface here."
+	linedone
+
+Text_YesUnderground::
+	text "You return to the"
+	line "surface."
+	linedone
 
 Text_North::
 	text "You move north."
@@ -133,24 +202,34 @@ PrintPosition::
 	call ConvertNumberA
 	ld de, .text2
 	call PrintText
-
 	ld a, [XYZ]
 	and COORD_Z
 	cp 10
 	jr nc, .double_figures
 	ld de, Buffer2 + 1
 	call PrintText
-	ld hl, Flags
-	res 4, [hl]
 	ld de, .text3
-	jp PrintText
+	call PrintText
+	jr .not_double_figures
 
 .double_figures
 	ld de, Buffer2
 	call PrintText
+	ld de, .text3
+	call PrintText
+
+.not_double_figures
 	ld hl, Flags
 	res 4, [hl]
-	ld de, .text3
+	ld a, [XYZ]
+	and COORD_Y
+	jr z, .surface
+;.underground
+	ld de, .text4a
+	jp PrintText
+
+.surface
+	ld de, .text4b
 	jp PrintText
 
 .text1
@@ -163,6 +242,14 @@ PrintPosition::
 
 .text3
 	text "."
+	linedone
+
+.text4a
+	text "Underground."
+	linedone
+
+.text4b
+	text "Above ground."
 	linedone
 
 Text_ThisButtonDoesNothingYet::
@@ -346,7 +433,7 @@ DescribeSector::
 	dw .sand
 	dw .ice
 	dw .savanna
-	dw .ocean
+	dw .mesa
 	dw .jungle
 	dw .heaven
 	dw .diorite
@@ -354,7 +441,7 @@ DescribeSector::
 	dw .obsidian
 	dw .ice_
 	dw .granite
-	dw .ocean_
+	dw .swamp
 	dw .andesite
 	dw .hell
 
@@ -388,9 +475,9 @@ DescribeSector::
 	call PrintText
 	jr .cont
 
-.ocean
+.mesa
 	pop hl
-	ld de, Text_Ocean
+	ld de, Text_Mesa
 	call PrintText
 	jr .cont
 
@@ -436,9 +523,9 @@ DescribeSector::
 	call PrintText
 	jr .cont
 
-.ocean_
+.swamp
 	pop hl
-	ld de, Text_Ocean_
+	ld de, Text_Swamp
 	call PrintText
 	jr .cont
 
@@ -487,8 +574,8 @@ Text_Savanna::
 	line "savanna."
 	linedone
 
-Text_Ocean::
-	text "the sea."
+Text_Mesa::
+	text "a mesa."
 	linedone
 
 Text_Jungle::
@@ -507,7 +594,7 @@ Text_Diorite::
 
 Text_Limestone::
 	text "a limest-"
-	line "one cave."
+	text "one cave."
 	linedone
 
 Text_Obsidian::
@@ -525,9 +612,9 @@ Text_Granite::
 	text "cave."
 	linedone
 
-Text_Ocean_::
-	text "the deep"
-	line "ocean."
+Text_Swamp::
+	text "an under-"
+	text "ground swamp."
 	linedone
 
 Text_Andesite::

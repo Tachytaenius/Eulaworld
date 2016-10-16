@@ -12,6 +12,49 @@ SetForwards::
 	dec bc
 	jr SetForwards
 
+RandomFillForwards::
+	;set bc bytes forward from hl to a completely random value
+	ld a, b
+	or c
+	ret z
+	call Random
+	ld a, [RandomSub]
+	ld [hli], a
+	dec bc
+	jr RandomFillForwards
+
+RandomFillForwardsSkipChunk_DivideBy8::
+	;set the first byte of bc chunks of de size forward from hl to a completely random value
+	ld a, b
+	or c
+	ret z
+	call Random
+	ld a, [RandomSub]
+	srl a
+	srl a
+	srl a
+	srl a
+	srl a
+	ld [hl], a
+	add hl, de
+	dec bc
+	jr RandomFillForwardsSkipChunk_DivideBy8
+
+RandomSetBit0ForwardsSkipChunk_Threshold10::
+	;set the first byte of bc chunks of de size forward from hl to have bit 0 set if the random value created is less than eleven
+	ld a, b
+	or c
+	ret z
+	call Random
+	ld a, [RandomSub]
+	cp 11
+	jr nc, .skip; If I am equal to or greater than 11, skip. If I am less than eleven, set bit 7 of [hl].
+	set 0, [hl]
+.skip
+	add hl, de
+	dec bc
+	jr RandomSetBit0ForwardsSkipChunk_Threshold10
+
 CopyForwards::
 	;copy bc bytes forward from de to hl
 	ld a, b

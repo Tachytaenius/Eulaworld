@@ -33,7 +33,7 @@ ID	SURFACE		UNDERGROUND
 02	Hot Desert	Obsidian Caves
 03	Cold Desert	Ice Caves
 04	Savanna		Granite Caves
-05	Ocean		Deep Ocean
+05	Mesa		Underground Swamp
 06	Jungle		Andesite Caves
 07	Heaven		Hell
 
@@ -50,7 +50,7 @@ BIT	MEANING
 
 Flags:
 BIT	MEANING
-0	Has a hole
+0	Has a hole (means nothing underground)
 1	N/A
 2	N/A
 3	N/A

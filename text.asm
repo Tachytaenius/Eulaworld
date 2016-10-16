@@ -19,7 +19,7 @@ Text_GameMenu::
 	text " |  Load game     | "
 	text " |  New game      | "
 	text " |                | "
-	text " └~~~~~~~~SEL STRT┘ "
+	text " └~~~~~~~SEL STRT~┘ "
 	done
 
 Text_NewGame::
@@ -36,7 +36,7 @@ Text_NewGame::
 	text " |  No            | "
 	text " |  Yes           | "
 	text " |                | "
-	text " └~~~~~~~~SEL STRT┘ "
+	text " └~~~~~~~SEL STRT~┘ "
 	done
 	
 Text_LoadGame::
@@ -48,7 +48,7 @@ Text_LoadGame::
 	text " |  Yes           | "
 	text " |  No            | "
 	text " |                | "
-	text " └~~~~~~~~SEL STRT┘ "
+	text " └~~~~~~~SEL STRT~┘ "
 	done
 
 INCLUDE "help.asm"
