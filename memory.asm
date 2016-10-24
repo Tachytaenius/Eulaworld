@@ -32,11 +32,13 @@ Buffer2::
 	ds 2
 MiniBuffer2::
 	ds 1
+MiniBuffer3::
+	ds 1
 ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-Flags:: ; 4 = Update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 1? 1 = Update Background 1? 0 = Initialized joypad?
+Flags:: ; 6 = Done call SeedRandom2_? ; 5 = Inside sector building? 4 = Update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 1? 1 = Update Background 1? 0 = Initialized joypad?
 	ds 1
 DownJoypad::;;;;;;7 START
 	ds 1         ;6 SELECT
@@ -61,4 +63,14 @@ Date::
 XYZ::
 	ds 1
 Skippable::
+	ds 1
+SeedB::
+	ds 1
+SeedC::
+	ds 1
+SeedD::
+	ds 1
+SeedE::
+	ds 1
+SeedH::
 	ds 1

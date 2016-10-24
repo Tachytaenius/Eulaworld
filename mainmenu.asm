@@ -14,6 +14,7 @@ MainTable::
 	dw NewGame_
 
 LoadGame_::
+	call SeedRandom2
 	call ClearScreen
 	ld de, Text_LoadGame
 	call PrintText
@@ -28,6 +29,7 @@ LoadYes::
 	farjump LoadGame
 
 NewGame_::
+	call SeedRandom2
 	call ClearScreen
 	ld de, Text_NewGame
 	call PrintText
@@ -40,3 +42,15 @@ NewGameTable::
 
 NewYes::
 	farjump NewGame
+
+SeedRandom2::
+	call Random
+	ld a, [RandomSub]
+	ld [SeedB], a
+	ret
+
+SeedRandom2_::
+	call Random
+	ld a, [RandomSub]
+	ld [SeedC], a
+	ret

@@ -37,6 +37,10 @@ GenerateWorld::
 	jp GenerateBank
 
 GenerateBank::
+	ld d, 0
+	ld hl, $D000
+	ld bc, $1000
+	call SetForwards
 	ld de, 64
 	ld bc, 64
 	ld hl, $D000

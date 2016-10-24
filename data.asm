@@ -17,8 +17,8 @@ RandomFillForwards::
 	ld a, b
 	or c
 	ret z
-	call Random
-	ld a, [RandomSub]
+	call Random2
+	ld a, [SeedH]
 	ld [hli], a
 	dec bc
 	jr RandomFillForwards
@@ -28,8 +28,9 @@ RandomFillForwardsSkipChunk_DivideBy8::
 	ld a, b
 	or c
 	ret z
-	call Random
-	ld a, [RandomSub]
+	call Random2
+	
+	ld a, [SeedH]
 	srl a
 	srl a
 	srl a
@@ -45,8 +46,8 @@ RandomSetBit0ForwardsSkipChunk_Threshold10::
 	ld a, b
 	or c
 	ret z
-	call Random
-	ld a, [RandomSub]
+	call Random2
+	ld a, [SeedH]
 	cp 11
 	jr nc, .skip; If I am equal to or greater than 11, skip. If I am less than eleven, set bit 7 of [hl].
 	set 0, [hl]

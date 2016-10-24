@@ -18,6 +18,15 @@ DualMenu::
 	ld [Buffer2 + 1], a
 .loop
 	call WaitForInput
+	ld a, [Flags]
+	bit 6, a
+	jr nz, .skip
+	call SeedRandom2_
+	ld a, [Flags]
+	set 7, a
+	ld [Flags], a
+
+.skip
 	ld a, [PressedJoypad]
 	and JOY_SELECT
 	jr nz, .change
@@ -94,4 +103,111 @@ SbcHlBc::
 
 .carry
 	inc bc
+	ret
+
+Random2::
+; Based off the following C/C++ routine found at https://en.wikipedia.org/wiki/Xorshift#Example_implementation
+;
+; #include <stdint.h>
+; 
+; /* These state variables must be initialized so that they are not all zero. */
+; uint32_t x, y, z, w;
+; 
+; uint32_t xorshift128(void) {
+;     uint32_t t = x;
+;     t ^= t << 11;
+;     t ^= t >> 8;
+;     x = y; y = z; z = w;
+;     w ^= w >> 19;
+;     w ^= t;
+;     return w;
+; }
+;
+; Where:
+; t is b
+; x is c
+; y is d
+; z is e
+; w is h
+;
+; and the amount of shifting is less.
+	; Backup all registers.
+	push af
+	push bc
+	push de
+	push hl
+	
+	; Load values.
+	ld a, [SeedB]
+	ld b, a
+	ld a, [SeedC]
+	ld c, a
+	ld a, [SeedD]
+	ld d, a
+	ld a, [SeedE]
+	ld e, a
+	ld a, [SeedH]
+	ld h, a
+
+	; t = x
+	ld b, c
+
+	; t = t ^ (t << 11)
+	ld a, b
+	sla a
+	sla a
+	sla a
+	sla a
+	xor b
+	ld b, a
+
+	; t = t ^ (t >> 8)
+;	ld a, b
+	srl a
+	srl a
+	srl a
+	xor b
+	ld b, a
+
+	; x = y
+	ld c, d
+
+	; y = z
+	ld d, e
+
+	; z = w
+	ld e, h
+
+	; w ^= w >> 19
+	ld a, h
+	sla a
+	sla a
+	sla a
+	sla a
+	sla a
+	xor h
+	ld h, a
+
+	; w ^= t
+	ld a, b
+	xor h
+	ld h, a
+
+	; Save values.
+	ld a, b
+	ld [SeedB], a
+	ld a, c
+	ld [SeedC], a
+	ld a, d
+	ld [SeedD], a
+	ld a, e
+	ld [SeedE], a
+	ld a, h
+	ld [SeedH], a
+	
+	; Retrieve register backups.
+	pop hl
+	pop de
+	pop bc
+	pop af
 	ret

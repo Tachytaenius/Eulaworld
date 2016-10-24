@@ -88,7 +88,7 @@ PrintText::
 .skip
 	ld a, [de]
 	inc de
-	cp $60
+	cp TXT_NEWLINE
 	jr nz, .not_newline
 .newline
 	push de
@@ -97,7 +97,7 @@ PrintText::
 	ld hl, $C208
 	jr .loop
 .not_newline
-	cp $61
+	cp TXT_DONE
 	jr z, .done
 	ld [hli], a
 	jr .loop

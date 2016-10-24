@@ -182,7 +182,7 @@ Text_WorldEnd::
 PrintPosition::
 	ld hl, Flags
 	set 4, [hl]
-	ld a, $61
+	ld a, TXT_DONE
 	ld [MiniBuffer2], a
 	ld a, [XYZ]
 	and COORD_X
@@ -445,98 +445,82 @@ DescribeSector::
 	dw .andesite
 	dw .hell
 
-.plains
-	pop hl
+.plains
 	ld de, Text_Plains
 	call PrintText
 	jp .cont
 
-.forest
-	pop hl
+.forest
 	ld de, Text_Forest
 	call PrintText
 	jr .cont
 
-.sand
-	pop hl
+.sand
 	ld de, Text_Sand
 	call PrintText
 	jr .cont
 
-.ice
-	pop hl
+.ice
 	ld de, Text_Ice
 	call PrintText
 	jr .cont
 
-.savanna
-	pop hl
+.savanna
 	ld de, Text_Savanna
 	call PrintText
 	jr .cont
 
-.mesa
-	pop hl
+.mesa
 	ld de, Text_Mesa
 	call PrintText
 	jr .cont
 
-.jungle
-	pop hl
+.jungle
 	ld de, Text_Jungle
 	call PrintText
 	jr .cont
 
-.heaven
-	pop hl
+.heaven
 	ld de, Text_Heaven
 	call PrintText
 	jr .cont
 
-.diorite
-	pop hl
+.diorite
 	ld de, Text_Diorite
 	call PrintText
 	jr .cont
 
-.limestone
-	pop hl
+.limestone
 	ld de, Text_Limestone
 	call PrintText
 	jr .cont
 
-.obsidian
-	pop hl
+.obsidian
 	ld de, Text_Obsidian
 	call PrintText
 	jr .cont
 
-.ice_
-	pop hl
+.ice_
 	ld de, Text_Ice_
 	call PrintText
 	jr .cont
 
-.granite
-	pop hl
+.granite
 	ld de, Text_Granite
 	call PrintText
 	jr .cont
 
-.swamp
-	pop hl
+.swamp
 	ld de, Text_Swamp
 	call PrintText
 	jr .cont
 
 .andesite
-	pop hl
 	ld de, Text_Andesite
 	call PrintText
 	jr .cont
 
 .hell
-	pop hl
 	ld de, Text_Hell
 	call PrintText
 
@@ -545,7 +529,149 @@ DescribeSector::
 	res 4, a
 	ld [Flags], a
 	call WaitUpdateBackground
+	pop hl
+
+	; Dealing with the house
+	inc hl
+	ld a, [hl]
+	and %00000011
+	push hl
+	cp 1
+	jr z, .wood
+	cp 2
+	jr z, .brick
+	cp 3
+	jr z, .stone
+
+;.no_house
+	jr .cont2
+
+.wood
+	ld de, Text_Wood
+	jr .cont_house
+
+.stone
+	ld de, Text_Stone
+	jr .cont_house
+
+.brick
+	ld de, Text_Brick
+	
+.cont_house
+	call PrintText
+	ld a, [Flags]
+	bit 5, a
+	jr z, .cont2
+	ld de, Text_Inside
+	call PrintText
+	ld a, TXT_DONE
+	ld [MiniBuffer3], a
+	ld a, [hl]
+	push hl
+	ld hl, MiniBuffer
+	bit 2, a
+	jr z, .next
+	ld a, "["
+	ld [hl], a
+	inc hl
+.next
+	bit 3, a
+	jr z, .next2
+	ld a, "]"
+	ld [hl], a
+	inc hl
+.next2
+	bit 4, a
+	jr z, .next3
+	ld a, "↓"
+	ld [hl], a
+	inc hl
+.next3
+	bit 5, a
+	jr z, .next4
+	ld a, "×"
+	ld [hl], a
+	inc hl
+.next4
+	bit 6, a
+	jr z, .next5
+	ld a, "╬"
+	ld [hl], a
+	inc hl
+.next5
+	bit 7, a
+	jr z, .finish
+	ld a, "±"
+	ld [hl], a
+	inc hl
+.finish
+	ld a, TXT_DONE
+	ld [hl], a
+	ld de, Text_Icons
+	call PrintText
+	ld de, MiniBuffer
+	call PrintText
+	pop hl
+
+.cont2
+	pop hl
+
+	; Dealing with the Flags
+	inc hl
+	ld a, [XYZ]
+	bit 7, a
+	jr nz, .check_underground
+	bit 0, [hl]
+	call nz, .hole
+.cont3
+	jp WaitUpdateBackground
+
+.check_underground
+	ld a, [WRAMBank]
+	push af
+	dec a
+	dec a
+	ld [rSVBK], a
+	bit 0, [hl]
+	call nz, .hole
+	pop af
+	ld [rSVBK], a
+	jr .cont3
+
+.hole
+	push hl
+	ld de, Text_Hole
+	call PrintText
+	pop hl
 	ret
+
+Text_Hole::
+	text "There's a hole here."
+	done
+
+Text_Icons::
+	text "This house contains:"
+	done
+
+Text_Inside::
+	text "You are inside the"
+	line "house."
+	linedone
+
+Text_Wood::
+	text "There is a wooden"
+	line "house here."
+	linedone
+
+Text_Brick::
+	text "There is a brick 'n'"
+	text "mortar house here."
+	linedone
+
+Text_Stone::
+	text "There is a stone"
+	line "house here."
+	linedone
 
 Text_YouAreIn::
 	text "You are in "

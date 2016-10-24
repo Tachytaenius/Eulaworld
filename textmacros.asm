@@ -3,7 +3,7 @@
 ; Refer to file LICENSE for information on the GPL 3.
 
 text		EQUS "db "
-line 		EQUS "db $60, "
-break 		EQUS "db $60"
-done 		EQUS "db $61"
-linedone 	EQUS "db $60, $61"
+line 		EQUS "db TXT_NEWLINE, "
+break 		EQUS "db TXT_NEWLINE"
+done 		EQUS "db TXT_DONE"
+linedone 	EQUS "db TXT_NEWLINE, TXT_DONE"

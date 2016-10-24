@@ -26,6 +26,25 @@ Sector:
 A bank's worth of sectors is 8 by 4 sectors, times 2 for the underground.
 There are 16 by 8 by 2 sectors in total, because there are 2 x 2 bank's worths in the game world.
 
+Entities:
+ID	TYPE		SPAWNHP	SPAWNEP	SPAWNMP	SPAWNCP
+00	Human		100		100		100		100
+01	Wolf		100		100		100		100
+02	Fox			100		100		100		100
+03	Cat			100		100		100		100
+04	Kitsune		100		100		100		100
+05	Neko		100		100		100		100
+06	Green Slime	25		50		0		0
+07	Skeleton	50		25		0		0
+08	Revenant	125		80		150		10
+09	Pinky		150		100		0		0
+0A	Red Slime	50		100		0		0
+0B	Blue Slime	100		200		0		0
+0C	Stone Golem	200		50		20		20
+0D	Iron Golem	500		125		10		30
+0E	Rotworm		75		50		0		0
+0F	Bloodworm	75		0		50		0
+
 Biomes:
 ID	SURFACE		UNDERGROUND
 00	Plains		Diorite Caves
@@ -47,6 +66,8 @@ BIT	MEANING
 5	House contains a mill
 6	House contains a stone grinder
 7	House contains a furnace
+
+If bit 1 says that the house is made out of stone but bit 0 says there is no house, then there is a house made out of brick 'n' mortar. Thus, 00 = no house, 01 = wooden house, 10 = brick 'n' mortar house, 11 = stone house.
 
 Flags:
 BIT	MEANING

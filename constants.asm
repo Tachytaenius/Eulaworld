@@ -12,7 +12,7 @@ COORD_Z			EQU %00001111
 ; Where is the stack supposed to start?
 StackStart		EQU $D000
 
-; Joypad constants
+; Joypad constants.
 JOY_DOWN		EQU %10000000
 JOY_UP			EQU %01000000
 JOY_LEFT		EQU %00100000
@@ -21,3 +21,7 @@ JOY_START		EQU %00001000
 JOY_SELECT		EQU %00000100
 JOY_B			EQU %00000010
 JOY_A			EQU %00000001
+
+; Text constants.
+TXT_NEWLINE		EQU	$FE
+TXT_DONE		EQU $FF

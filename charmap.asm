@@ -98,3 +98,9 @@
 	charmap "@", $5D
 	charmap "'", $5E
 	charmap "%", $5F
+	charmap "[", $60 ; Bed symbol.
+	charmap "]", $61 ; Table and chair symbol.
+	charmap "↓", $62 ; Workbench symbol.
+	charmap "×", $63 ; Mill symbol.
+	charmap "╬", $64 ; Stone grinder symbol.
+	charmap "±", $65 ; Furnace symbol.
