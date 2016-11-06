@@ -6,7 +6,7 @@ INCLUDE "macros.asm"
 
 SECTION	"Org $00", HOME[$00]
 RST_00:
-	ld [Buffer], a
+	ld [Buffer + 1], a
 	jp Farcall
 
 SECTION	"Org $08", HOME[$08]

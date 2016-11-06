@@ -5,6 +5,8 @@
 PreMainLoop::
 	call GetXYZAddressInHLAndChangeBank
 	call DescribeSector
+	call Time_NoClock
+	call WaitUpdateBackground
 MainLoop::
 	call WaitForInput
 	ld a, [PressedJoypad]
@@ -18,16 +20,16 @@ MainLoop::
 	jr nz, .MoveWest
 	ld a, [PressedJoypad]
 	and JOY_RIGHT
-	jr nz, .MoveEast
+	jp nz, .MoveEast
 	ld a, [PressedJoypad]
 	and JOY_A
-	call nz, PrintPosition
+	call nz, PrintPositionAndTime
 	ld a, [PressedJoypad]
 	and JOY_B
 	call nz, .ThisButtonDoesNothingYet
 	ld a, [PressedJoypad]
 	and JOY_SELECT
-	jr nz, .ToggleDepth
+	jp nz, .ToggleDepth
 	ld a, [PressedJoypad]
 	and JOY_START
 	jr z, MainLoop
@@ -36,17 +38,21 @@ MainLoop::
 
 .ThisButtonDoesNothingYet
 	ld de, Text_ThisButtonDoesNothingYet
-	jp PrintText
+	call PrintText
+	jp WaitUpdateBackground
 
 .MoveNorth
 	ld a, [XYZ]
 	and COORD_Z ; a is no longer garuanteed to be XYZ, so we reload it after the conditional jump.
-	jr z, .end
+	jp z, .end
 	ld a, [XYZ]
 	sub %00000001
 	ld [XYZ], a
 	ld de, Text_North
 	call PrintText
+	ld bc, 14
+	call ForwardTime
+	call TickWorld
 	jr PreMainLoop
 
 .MoveSouth
@@ -59,6 +65,9 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_South
 	call PrintText
+	ld bc, 14
+	call ForwardTime
+	call TickWorld
 	jp PreMainLoop
 
 .MoveWest
@@ -70,6 +79,9 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_West
 	call PrintText
+	ld bc, 14
+	call ForwardTime
+	call TickWorld
 	jp PreMainLoop
 
 .MoveEast
@@ -82,11 +94,15 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_East
 	call PrintText
+	ld bc, 14
+	call ForwardTime
+	call TickWorld
 	jp PreMainLoop
 
 .end
 	ld de, Text_WorldEnd
 	call PrintText
+	call WaitUpdateBackground
 	jp MainLoop
 
 .ToggleDepth
@@ -101,6 +117,7 @@ MainLoop::
 ;.no_overground
 	ld de, Text_NoSurface
 	call PrintText
+	call WaitUpdateBackground
 	jp MainLoop
 
 .yes_overground
@@ -109,6 +126,9 @@ MainLoop::
 	ld a, [XYZ]
 	set 7, a
 	ld [XYZ], a
+	ld bc, 5
+	call ForwardTime
+	call TickWorld
 	jp PreMainLoop
 
 .underground
@@ -124,6 +144,7 @@ MainLoop::
 	ld [rSVBK], a
 	ld de, Text_NoUnderground
 	call PrintText
+	call WaitUpdateBackground
 	jp MainLoop
 
 .yes_underground
@@ -134,6 +155,9 @@ MainLoop::
 	ld a, [XYZ]
 	res 7, a
 	ld [XYZ], a
+	ld bc, 6
+	call ForwardTime
+	call TickWorld
 	jp PreMainLoop
 
 Text_NoSurface::
@@ -179,26 +203,116 @@ Text_WorldEnd::
 	line "further."
 	linedone
 
-PrintPosition::
-	ld hl, Flags
-	set 4, [hl]
+ForwardTime::
+	; Amount to forward in bc.
+	ld a, b
+	or c
+	ld a, [Time]
+	ret z
+	inc a
+	cp 0
+	call z, .inc_date
+	dec bc
+	ld [Time], a
+	jr ForwardTime
+
+.inc_date
+	ld hl, Date
+	inc [hl]
+	ret
+
+Time_NoClock::
+	ld a, [XYZ]
+	bit 7, a
+	ret nz
+
+	ld a, [Time]
+	cp 64
+	jr c, .night
+	cp 128
+	jr c, .morning
+	cp 192
+	jr c, .afternoon
+.night
+	ld de, Text_Night
+	jp PrintText
+
+.morning
+	ld de, Text_Morning
+	jp PrintText
+
+.afternoon
+	ld de, Text_Afternoon
+	jp PrintText
+
+Text_Night::
+	text "It is night-time."
+	linedone
+
+Text_Morning::
+	text "It is the morning."
+	linedone
+
+Text_Afternoon::
+	text "It is the afternoon."
+	done
+
+Time_Clock::
+	ld de, .text1
+	call PrintText
 	ld a, TXT_DONE
-	ld [MiniBuffer2], a
+	ld [Buffer + 5], a
+	ld a, [Time]
+	and TIME_HOUR
+	rlca
+	rlca
+	rlca
+	ld de, Buffer
+	call ConvertNumberA
+	ld de, Buffer + 4
+	call PrintText
+	ld de, .text2
+	call PrintText
+	ld a, [Time]
+	and TIME_MINUTE
+	ld de, Buffer
+	call ConvertNumberA
+	ld de, Buffer + 3
+	call PrintText
+	ld de, .text3
+	call PrintText
+	jp WaitUpdateBackground
+
+.text1
+	text "The time is "
+	done
+
+.text2
+	text ":"
+	done
+
+.text3
+	text "."
+	linedone
+
+PrintPositionAndTime::
+	ld a, TXT_DONE
+	ld [Buffer + 5], a
 	ld a, [XYZ]
 	and COORD_X
 	rlca
 	rlca
 	rlca
 	rlca
-	ld de, MiniBuffer
+	ld de, Buffer
 	call ConvertNumberA
 	ld de, .text1
 	call PrintText
-	ld de, Buffer2 + 1
+	ld de, Buffer + 4
 	call PrintText
 	ld a, [XYZ]
 	and COORD_Z
-	ld de, MiniBuffer
+	ld de, Buffer
 	call ConvertNumberA
 	ld de, .text2
 	call PrintText
@@ -206,31 +320,32 @@ PrintPosition::
 	and COORD_Z
 	cp 10
 	jr nc, .double_figures
-	ld de, Buffer2 + 1
+	ld de, Buffer + 4
 	call PrintText
 	ld de, .text3
 	call PrintText
 	jr .not_double_figures
 
 .double_figures
-	ld de, Buffer2
+	ld de, Buffer + 3
 	call PrintText
 	ld de, .text3
 	call PrintText
 
 .not_double_figures
-	ld hl, Flags
-	res 4, [hl]
 	ld a, [XYZ]
 	and COORD_Y
 	jr z, .surface
 ;.underground
 	ld de, .text4a
-	jp PrintText
+	call PrintText
+	jp WaitUpdateBackground
 
 .surface
 	ld de, .text4b
-	jp PrintText
+	call PrintText
+	call Time_Clock
+	jp WaitUpdateBackground
 
 .text1
 	text "X = "
@@ -256,6 +371,9 @@ Text_ThisButtonDoesNothingYet::
 	text "This button does"
 	line "nothing yet."
 	linedone
+
+TickWorld::
+	ret
 
 GetXYZAddressInHLAndChangeBank::
 	ld a, [XYZ]
@@ -344,13 +462,12 @@ HelpLoop::
 	jr nz, .right
 	ld a, [PressedJoypad]
 	and JOY_B
-	jr nz, .quit
-	jr HelpLoop
-
-.quit
+	jr z, HelpLoop
 	call ClearScreen
 	call GetXYZAddressInHLAndChangeBank
-	jp DescribeSector
+	call DescribeSector
+	call Time_NoClock
+	jp WaitUpdateBackground
 
 .left
 	ld a, [MenuSelection]
@@ -382,12 +499,14 @@ HelpIndex::
 	call ClearScreen
 	ld de, Text_HelpIndex
 	call PrintText
+	call WaitUpdateBackground
 	jr HelpLoop
 
 BasicPlay::
 	call ClearScreen
 	ld de, Text_BasicPlay
 	call PrintText
+	call WaitUpdateBackground
 	jr HelpLoop
 
 Inventory::
@@ -405,13 +524,10 @@ StoryPlay::
 	call ClearScreen
 	ld de, Text_StoryPlay
 	call PrintText
+	call WaitUpdateBackground
 	jr HelpLoop
 
 DescribeSector::
-	ld a, [Flags]
-	set 4, a
-	ld [Flags], a
-
 	; Dealing with the biome.
 	ld a, [XYZ]
 	bit 7, a
@@ -525,10 +641,6 @@ DescribeSector::
 	call PrintText
 
 .cont
-	ld a, [Flags]
-	res 4, a
-	ld [Flags], a
-	call WaitUpdateBackground
 	pop hl
 
 	; Dealing with the house
@@ -565,10 +677,10 @@ DescribeSector::
 	ld de, Text_Inside
 	call PrintText
 	ld a, TXT_DONE
-	ld [MiniBuffer3], a
+	ld [Buffer + 6], a
 	ld a, [hl]
 	push hl
-	ld hl, MiniBuffer
+	ld hl, Buffer
 	bit 2, a
 	jr z, .next
 	ld a, "["
@@ -609,7 +721,7 @@ DescribeSector::
 	ld [hl], a
 	ld de, Text_Icons
 	call PrintText
-	ld de, MiniBuffer
+	ld de, Buffer
 	call PrintText
 	pop hl
 
@@ -624,7 +736,7 @@ DescribeSector::
 	bit 0, [hl]
 	call nz, .hole
 .cont3
-	jp WaitUpdateBackground
+	ret
 
 .check_underground
 	ld a, [WRAMBank]

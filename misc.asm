@@ -13,9 +13,9 @@ DualMenu::
 	ld [BGTransferData + (SCRN_X_B * 13) + 3], a
 	call WaitUpdateBackground
 	ld a, h
-	ld [Buffer2], a
+	ld [Buffer + 3], a
 	ld a, l
-	ld [Buffer2 + 1], a
+	ld [Buffer + 4], a
 .loop
 	call WaitForInput
 	ld a, [Flags]
@@ -33,9 +33,9 @@ DualMenu::
 	ld a, [PressedJoypad]
 	and JOY_START
 	jr z, .loop
-	ld a, [Buffer2]
+	ld a, [Buffer + 3]
 	ld h, a
-	ld a, [Buffer2 + 1]
+	ld a, [Buffer + 4]
 	ld l, a
 	ld a, [MenuSelection]
 	jp JumpTable

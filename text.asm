@@ -51,4 +51,7 @@ Text_LoadGame::
 	text " └~~~~~~~SEL STRT~┘ "
 	done
 
+Text_NewLine::
+	linedone
+
 INCLUDE "help.asm"

@@ -12,6 +12,10 @@ NewGame::
 	ld a, 1
 	ld [WRAMBank], a
 	ld [rSVBK], a
+	ld a, 64
+	ld [Time], a
+	ld hl, Flags
+	set 4, [hl]
 	jp PreMainLoop
 
 Text_GameStart::
