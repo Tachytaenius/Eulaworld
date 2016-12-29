@@ -1,16 +1,16 @@
-Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+Copyleft 2016 Henry "wolfboyft" Fleminger Thomson.
 Licensed under the GNU General Public License ver. 3.
 Refer to file LICENSE for information on the GPL 3.
 
 Entity:
 	Byte	1	Identity
+	Byte	1	Flags
+	Byte	1	Data
 	Byte	1	Hits
 	Byte	1	Energy
 	Byte	1	Mana
 	Byte	1	Chakra
-	Byte	1	Flags
 	Byte	1	Equipment
-	Byte	1	Data
 
 Sector:
 	Byte	1	Biome
@@ -27,39 +27,45 @@ A bank's worth of sectors is 8 by 4 sectors, times 2 for the underground.
 There are 16 by 8 by 2 sectors in total, because there are 2 x 2 bank's worths in the game world.
 
 Entities:
-ID	TYPE		SPAWNHP	SPAWNEP	SPAWNMP	SPAWNCP
-00	Human		100		100		100		100
-01	Wolf		100		100		100		100
-02	Fox			100		100		100		100
-03	Cat			100		100		100		100
-04	Kitsune		100		100		100		100
-05	Neko		100		100		100		100
-06	Inu			100		100		100		100
-07	Green Slime	25		50		0		0
-08	Skeleton	50		25		0		0
-09	Revenant	125		80		150		10
-0A	Pinky		150		100		0		0
-0B	Red Slime	50		100		0		0
-0C	Blue Slime	100		200		0		0
-0D	Stone Golem	200		50		20		20
-0E	Iron Golem	500		125		10		30
-0F	Rotworm		75		50		0		0
-10	Bloodworm	75		0		50		0
-11	Pig			50		50		0		0
-12	Cow			50		0		0		0
-13	Sheep		50		0		0		0
-14	Chicken		50		0		0		0
+ID	TYPE			SPAWNHP	SPAWNEP	SPAWNMP	SPAWNCP
+00	Nothing			0		0		0		0
+01	Human			100		100		100		100
+02	Wolf			100		100		100		100
+03	Fox				100		100		100		100
+04	Cat				100		100		100		100
+05	Elf				100		100		100		100
+06	LoAmaaciInu		100		100		100		100
+07	LoAmaaciKitsune	100		100		100		100
+08	LoAmaaciNeko	100		100		100		100
+09	GreenSlime		25		50		0		0
+0A	Mancubus		255		255		0		0
+0B	Revenant		125		80		150		10
+0C	Pinky			150		100		0		0
+0D	RedSlime		50		100		0		0
+0E	BlueSlime		100		200		0		0
+0F	StoneGolem		200		50		20		20
+10	IronGolem		255		125		10		30
+11	Rotworm			75		50		0		0
+12	Bloodworm		75		0		50		0
+13	Pig				50		50		0		0
+14	Cow				70		0		0		0
+15	Sheep			40		0		0		0
+16	Chicken			20		0		0		0
+17	Dwarf			100		100		100		100
+18	HiAmaaciInu		100		100		100		100
+19	HiAmaaciKitsune	100		100		100		100
+1A	HiAmaaciNeko	100		100		100		100
 
 Biomes:
 ID	SURFACE		UNDERGROUND
-00	Plains		Diorite Caves
-01	Forest		Limestone Caves
-02	Hot Desert	Obsidian Caves
-03	Cold Desert	Ice Caves
-04	Savanna		Granite Caves
+00	Plains		Diorite Cave
+01	Forest		Limestone Cave
+02	Sand Desert	Obsidian Cave
+03	Ice Desert	Ice Cave
+04	Savanna		Granite Cave
 05	Mesa		Underground Swamp
-06	Jungle		Andesite Caves
-07	Heaven		Hell
+06	Jungle		Andesite Cave
+07	Aether		Nether
 
 House Information:
 BIT	MEANING
@@ -74,9 +80,20 @@ BIT	MEANING
 
 If bit 1 says that the house is made out of stone but bit 0 says there is no house, then there is a house made out of brick 'n' mortar. Thus, 00 = no house, 01 = wooden house, 10 = brick 'n' mortar house, 11 = stone house.
 
-Flags:
+Entity Flags:
 BIT	MEANING
-0	Has a hole (means nothing underground)
+0	Is inside sector house
+1	N/A
+2	N/A
+3	N/A
+4	N/A
+5	N/A
+6	Alignment bit 0
+7	Alignment bit 1
+
+Sector Flags:
+BIT	MEANING
+0	Has a hole (means nothing underground, as when you're down there the holes can't be different to the surface, so they're taken from up here.)
 1	N/A
 2	N/A
 3	N/A
@@ -85,13 +102,179 @@ BIT	MEANING
 6	N/A
 7	N/A
 
-Resources:
+Plains Resources:
 ID	ITEM
-00	Wood
+00	
+01	Strawberries
+02	Copper
+03	Stone
+04	Coal
+05	Barley
+06	Corn
+07	Clevergrass
+
+
+Forest Resources:
+ID	ITEM
+00	
+01	Wood
+02	Copper
+03	Stone
+04	Blueberries
+05	Barley
+06	Corn
+07	Clevergrass
+
+Sand Desert Resources:
+ID	ITEM
+00	
+01	Wavethorn
+02	Copper
+03	Stone
+04	Flint
+05	Bones
+06	Iron
+07	Cactus
+
+Ice Desert Resources:
+ID	ITEM
+00	
+01	Iron
+02	Stone
+03	Copper
+04	Frostweed
+05	Bone
+06	Coal
+07	Shiverthorn
+
+Savanna Resources:
+ID	ITEM
+00	
+01	Iron
+02	Clevergrass
+03	Stone
+04	Sugar Cane
+05	Snagweed
+06	Bones
+07	Coal
+
+Mesa Resources:
+ID	ITEM
+00	
+01	Flint
+02	Snagweed
+03	Iron
+04	Clay
+05	Wood
+06	Bones
+07	Copper
+
+Jungle Resources:
+ID	ITEM
+00	
+01	Sugar Cane
+02	Blueberry
+03	Wood
+04	Cacao Bean
+05	Copper
+06	Snagweed
+07	Sniffwort
+
+Aether Resources:
+ID	ITEM
+00	
+01	Capacitium
+02	Sensium
+03	Glowstone
+04	Memorite
+05	Calculite
+06	Silicon
+07	Erchius
+
+Diorite Cave Resources:
+ID	ITEM
+00	
 01	Copper
 02	Iron
+03	Silver
+04	Tungsten
+05	Topaz
+06	Mushroom
+07	Glowshroom
+
+Limestone Cave Resources:
+ID	ITEM
+00	
+01	Copper
+02	Iron
+03	Tungsten
+04	Bone
+05	Amethyst
+06	Mushroom
+07	Glowshroom
+
+Obsidian Cave Resources:
+ID	ITEM
+00	
+01	Tungsten
+02	Iron
+03	Silver
+04	Bone
+05	Tin
+06	Gold
+07	Diamond
+
+Ice Cave Resources:
+ID	ITEM
+00	
+01	Shiverthorn
+02	Iron
+03	Silver
+04	Sapphire
+05	Tin
+06	Rollennium
+07	Zeffrannium
+
+Granite Cave Resources:
+ID	ITEM
+00	
+01	Copper
+02	Iron
+03	Tungsten
+04	Bone
+05	Ruby
+06	Mushroom
+07	Glowshroom
+
+Underground Swamp Resources:
+ID	ITEM
+00	
+01	Snagweed
+02	Iron
 03	Gold
-04	Diamond
-05	Arcanite
-06	Wheat
-07	Sugar Cane
+04	Bone
+05	Amber
+06	Mushroom
+07	Glowshroom
+
+Andesite Cave Resources:
+ID	ITEM
+00	
+01	Copper
+02	Iron
+03	Erchius
+04	Tungsten
+05	Emerald
+06	Mushroom
+07	Glowshroom
+
+Nether Resources:
+ID	ITEM
+00	
+01	Capacitium
+02	Sensium
+03	Glowstone
+04	Memorite
+05	Calculite
+06	Silicon
+07	Erchius

@@ -1,4 +1,4 @@
-; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyleft 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -219,7 +219,14 @@ EmbeddedSetForwards::
 
 	; If you need to test something quickly, put it here.
 
-	
+	ld a, [ROMBank]
+	push af
+	ld a, 3
+	ld [ROMBank], a
+	ld [$2000], a
+	call Sine
+	pop af
+	ld [ROMBank], a
 
 	ld de, Text_Eulaworld
 	call PrintText
@@ -241,6 +248,9 @@ REPT 8
 	RGBSet $55, $55, $55
 	RGBSet $00, $00, $00
 ENDR
+
+CallTable:: ; Useful for when you want the next ret after a JumpTable to return to where the JumpTable was executed.
+	rst JumpTable
 
 INCLUDE "far.asm"
 INCLUDE "joypad.asm"

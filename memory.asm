@@ -1,4 +1,4 @@
-; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyleft 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -15,7 +15,23 @@ BGTransferData2::
 	ds 80
 BGTransferData2End::
 Player::
-	ds 1 
+PlayerIdentity::
+	ds 1
+PlayerFlags::
+	ds 1
+PlayerData::
+	ds 1
+PlayerHits::
+	ds 1
+PlayerEnergy::
+	ds 1
+PlayerMana::
+	ds 1
+PlayerChakra::
+	ds 1
+PlayerEquipment::
+	ds 1
+
 ; StackStart EQU $D000
 
 SECTION "HRAM", HRAM
@@ -30,7 +46,7 @@ ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-Flags:: ; 6 = Done call SeedRandom2_? ; 5 = Inside sector building? 4 = Don't update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 1? 1 = Update Background 1? 0 = Initialized joypad?
+Flags:: ; 6 = Done call SeedRandom2_? ; 5 = Inside sector building? 4 = Don't update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 2? (I think.) 1 = Update Background 1? 0 = Initialized joypad?
 	ds 1
 DownJoypad::;;;;;;7 START
 	ds 1         ;6 SELECT

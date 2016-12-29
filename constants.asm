@@ -1,8 +1,6 @@
-; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyleft 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
-
-NULL			EQU %00000000
 
 ; What bits are used for the X, Y an Z positions?
 COORD_X			EQU %01110000

@@ -1,4 +1,4 @@
-; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyleft 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -24,12 +24,12 @@ RandomFillForwards::
 	jr RandomFillForwards
 
 RandomFillForwardsSkipChunk_DivideBy8::
-	;set the first byte of bc chunks of de size forward from hl to a completely random value
+	;set the first byte of bc chunks of de size forward from hl to a completely random value and divide it by 8
 	ld a, b
 	or c
 	ret z
+
 	call Random2
-	
 	ld a, [SeedH]
 	srl a
 	srl a
@@ -41,6 +41,20 @@ RandomFillForwardsSkipChunk_DivideBy8::
 	dec bc
 	jr RandomFillForwardsSkipChunk_DivideBy8
 
+RandomFillForwardsSkipChunk::
+	;set the first byte of bc chunks of de size forward from hl to a completely random value
+	ld a, b
+	or c
+	ret z
+
+	call Random2
+	ld a, [SeedH]
+	ld [hl], a
+	add hl, de
+	dec bc
+	jr RandomFillForwardsSkipChunk_DivideBy8
+
+
 RandomSetBit0ForwardsSkipChunk_Threshold10::
 	;set the first byte of bc chunks of de size forward from hl to have bit 0 set if the random value created is less than eleven
 	ld a, b
@@ -49,7 +63,7 @@ RandomSetBit0ForwardsSkipChunk_Threshold10::
 	call Random2
 	ld a, [SeedH]
 	cp 11
-	jr nc, .skip; If I am equal to or greater than 11, skip. If I am less than eleven, set bit 7 of [hl].
+	jr nc, .skip; If I am equal to or greater than 11, skip. If I am less than eleven, set bit 0 of [hl].
 	set 0, [hl]
 .skip
 	add hl, de

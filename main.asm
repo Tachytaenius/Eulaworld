@@ -1,4 +1,4 @@
-; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyleft 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -26,7 +26,7 @@ MainLoop::
 	call nz, PrintPositionAndTime
 	ld a, [PressedJoypad]
 	and JOY_B
-	call nz, .ThisButtonDoesNothingYet
+	jp nz, GameMenu
 	ld a, [PressedJoypad]
 	and JOY_SELECT
 	jp nz, .ToggleDepth
@@ -50,7 +50,7 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_North
 	call PrintText
-	ld bc, 14
+	ld bc, 13
 	call ForwardTime
 	call TickWorld
 	jr PreMainLoop
@@ -65,7 +65,7 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_South
 	call PrintText
-	ld bc, 14
+	ld bc, 13
 	call ForwardTime
 	call TickWorld
 	jp PreMainLoop
@@ -79,7 +79,7 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_West
 	call PrintText
-	ld bc, 14
+	ld bc, 13
 	call ForwardTime
 	call TickWorld
 	jp PreMainLoop
@@ -94,7 +94,7 @@ MainLoop::
 	ld [XYZ], a
 	ld de, Text_East
 	call PrintText
-	ld bc, 14
+	ld bc, 13
 	call ForwardTime
 	call TickWorld
 	jp PreMainLoop
@@ -126,7 +126,7 @@ MainLoop::
 	ld a, [XYZ]
 	set 7, a
 	ld [XYZ], a
-	ld bc, 5
+	ld bc, 1
 	call ForwardTime
 	call TickWorld
 	jp PreMainLoop
@@ -155,7 +155,7 @@ MainLoop::
 	ld a, [XYZ]
 	res 7, a
 	ld [XYZ], a
-	ld bc, 6
+	ld bc, 2
 	call ForwardTime
 	call TickWorld
 	jp PreMainLoop
@@ -373,7 +373,125 @@ Text_ThisButtonDoesNothingYet::
 	linedone
 
 TickWorld::
+	call GetXYZAddressInHLAndChangeBank
+	ld bc, 8
+	add hl, bc
+	ld a, h
+	ld [Buffer + 6], a
+	ld a, l
+	ld [Buffer + 7], a
+	ld a, [hl]
+	ld hl, Creatures
+	call CallTable
 	ret
+
+Creatures::
+	dw Nothing
+	dw Human
+	dw Wolf
+	dw Fox
+	dw Cat
+	dw Elf
+	dw LoAmaaciInu
+	dw LoAmaaciKitsune
+	dw LoAmaaciNeko
+	dw GreenSlime
+	dw Mancubus
+	dw Revenant
+	dw Pinky
+	dw RedSlime
+	dw BlueSlime
+	dw StoneGolem
+	dw IronGolem
+	dw Rotworm
+	dw Bloodworm
+	dw Pig
+	dw Cow
+	dw Sheep
+	dw Chicken
+	dw Dwarf
+	dw HiAmaaciInu
+	dw HiAmaaciKitsune
+	dw HiAmaaciNeko
+
+Wolf::
+Fox::
+Cat::
+Elf::
+LoAmaaciInu::
+LoAmaaciKitsune::
+LoAmaaciNeko::
+GreenSlime::
+Mancubus::
+Revenant::
+Pinky::
+RedSlime::
+BlueSlime::
+StoneGolem::
+IronGolem::
+Rotworm::
+Bloodworm::
+Pig::
+Cow::
+Sheep::
+Chicken::
+Dwarf::
+HiAmaaciInu::
+HiAmaaciKitsune::
+HiAmaaciNeko::
+	ret
+
+CommonRace::
+	ld a, [Buffer + 6]
+	ld h, a
+	ld a, [Buffer + 7]
+	ld l, a
+	inc hl
+	ld a, [hl]
+	and %11000000
+	rlca
+	rlca
+	ret
+Nothing::
+	ret
+
+Human::
+	call CommonRace
+	cp 3
+	ret z
+;.hostile
+
+	ld de, Text_HostileHuman
+	call PrintText
+	call Random2
+	ld a, [PlayerHits]
+	ld b, a
+	ld a, [SeedH]
+	srl a
+	srl a
+	srl a
+	srl a
+	srl a
+	sub b
+
+	ld de, Buffer
+	call ConvertNumberA
+
+	ld de, Buffer + 4
+	call PrintText
+
+	ret
+
+Text_HostileHuman::
+	text "A hostile human hits"
+	text "you, dealing "
+	done
+
+
+
+Text_Damage::
+	line "damage."
+	done
 
 GetXYZAddressInHLAndChangeBank::
 	ld a, [XYZ]
@@ -668,55 +786,64 @@ DescribeSector::
 
 .brick
 	ld de, Text_Brick
-	
+
 .cont_house
+	push hl
 	call PrintText
 	ld a, [Flags]
 	bit 5, a
 	jr z, .cont2
 	ld de, Text_Inside
 	call PrintText
-	ld a, TXT_DONE
-	ld [Buffer + 6], a
-	ld a, [hl]
+	pop hl
 	push hl
+	ld a, [hl]
 	ld hl, Buffer
 	bit 2, a
 	jr z, .next
+	push af
 	ld a, "["
-	ld [hl], a
-	inc hl
+	ld [hli], a
+	pop af
+
 .next
 	bit 3, a
 	jr z, .next2
+	push af
 	ld a, "]"
-	ld [hl], a
-	inc hl
+	ld [hli], a
+	pop af
 .next2
 	bit 4, a
 	jr z, .next3
+	push af
 	ld a, "↓"
-	ld [hl], a
-	inc hl
+	ld [hli], a
+	pop af
 .next3
 	bit 5, a
 	jr z, .next4
+	push af
 	ld a, "×"
-	ld [hl], a
-	inc hl
+	ld [hli], a
+	pop af
 .next4
 	bit 6, a
 	jr z, .next5
+	push af
 	ld a, "╬"
-	ld [hl], a
-	inc hl
+	ld [hli], a
+	pop af
 .next5
 	bit 7, a
 	jr z, .finish
+	push af
 	ld a, "±"
-	ld [hl], a
-	inc hl
+	ld [hli], a
+	pop af
 .finish
+	ld a, TXT_NEWLINE
+	ld [hli], a
 	ld a, TXT_DONE
 	ld [hl], a
 	ld de, Text_Icons
@@ -864,3 +991,5 @@ Text_Hell::
 	text "a nether"
 	line "biome."
 	linedone
+
+INCLUDE "gamemenu.asm"

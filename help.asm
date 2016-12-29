@@ -37,7 +37,7 @@ Text_BasicPlay::
 	line "SELECT takes you"
 	line "below ground/to the"
 	line "surface, wherever"
-	line "possible. Start is"
+	line "possible. START is"
 	line "for this help menu."
 	line "~~L-=------------R~~"
 	done

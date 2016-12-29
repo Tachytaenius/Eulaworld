@@ -1,4 +1,4 @@
-; Copyright 2016 Henry "wolfboyft" Fleminger Thomson.
+; Copyleft 2016 Henry "wolfboyft" Fleminger Thomson.
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
@@ -51,4 +51,20 @@ GenerateBank::
 	call RandomFillForwardsSkipChunk_DivideBy8
 	ld bc, 64
 	ld hl, $D002
-	jp RandomSetBit0ForwardsSkipChunk_Threshold10
+	call RandomSetBit0ForwardsSkipChunk_Threshold10
+	ld de, 64
+	ld bc, 64
+	ld hl, $D003
+	call RandomFillForwardsSkipChunk_DivideBy8
+	ld de, 64
+	ld bc, 65
+	ld hl, $D004
+	call RandomFillForwardsSkipChunk
+	ld de, 64
+	ld bc, 64
+	ld hl, $D005
+	call RandomFillForwardsSkipChunk_DivideBy8
+	ld de, 64
+	ld bc, 65
+	ld hl, $D006
+	jp RandomFillForwardsSkipChunk
