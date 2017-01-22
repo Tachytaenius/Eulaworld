@@ -382,7 +382,7 @@ TickWorld::
 	ld [Buffer + 7], a
 	ld a, [hl]
 	ld hl, Creatures
-	call CallTable
+	call JumpTable
 	ret
 
 Creatures::
@@ -392,9 +392,9 @@ Creatures::
 	dw Fox
 	dw Cat
 	dw Elf
-	dw LoAmaaciInu
-	dw LoAmaaciKitsune
-	dw LoAmaaciNeko
+	dw AmaaciInu
+	dw AmaaciKitsune
+	dw AmaaciNeko
 	dw GreenSlime
 	dw Mancubus
 	dw Revenant
@@ -410,17 +410,22 @@ Creatures::
 	dw Sheep
 	dw Chicken
 	dw Dwarf
-	dw HiAmaaciInu
-	dw HiAmaaciKitsune
-	dw HiAmaaciNeko
+	dw Drow
+	dw Gnome
+	dw Cacodemon
+	dw Imp
+	dw Beholder
+	dw KuoToa
+	dw Horse
+	dw Unicorn
 
 Wolf::
 Fox::
 Cat::
 Elf::
-LoAmaaciInu::
-LoAmaaciKitsune::
-LoAmaaciNeko::
+AmaaciInu::
+AmaaciKitsune::
+AmaaciNeko::
 GreenSlime::
 Mancubus::
 Revenant::
@@ -436,9 +441,14 @@ Cow::
 Sheep::
 Chicken::
 Dwarf::
-HiAmaaciInu::
-HiAmaaciKitsune::
-HiAmaaciNeko::
+Drow::
+Gnome::
+Cacodemon::
+Imp::
+Beholder::
+KuoToa::
+Horse::
+Unicorn::
 	ret
 
 CommonRace::
@@ -451,7 +461,6 @@ CommonRace::
 	and %11000000
 	rlca
 	rlca
-	ret
 Nothing::
 	ret
 
@@ -464,34 +473,44 @@ Human::
 	ld de, Text_HostileHuman
 	call PrintText
 	call Random2
-	ld a, [PlayerHits]
-	ld b, a
 	ld a, [SeedH]
-	srl a
-	srl a
-	srl a
-	srl a
-	srl a
-	sub b
-
+	ld b, a
+	ld a, [PlayerHits]
+	srl b
+	srl b
+	srl b
+	srl b
+	srl b
+	push af
+	push bc
 	ld de, Buffer
+	ld a, b
 	call ConvertNumberA
+	call CleanBuffer
+	pop bc
+	pop af
+	jp CommonRace2
 
-	ld de, Buffer + 4
+CommonRace2::
+	sub b
+	jp c, Dead
+	jp z, Dead
+	ld [PlayerHits], a
+	ld a, TXT_DONE
+	ld [Buffer + 5], a
+	ld de, Buffer + 2
 	call PrintText
-
-	ret
+	ld de, Text_Damage
+	jp PrintText
 
 Text_HostileHuman::
 	text "A hostile human hits"
 	text "you, dealing "
 	done
 
-
-
 Text_Damage::
 	line "damage."
-	done
+	linedone
 
 GetXYZAddressInHLAndChangeBank::
 	ld a, [XYZ]
@@ -566,6 +585,8 @@ HelpTable:: ; 0 - 13
 	dw StoryPlay
 
 Help::
+	ld hl, Flags
+	set 7, [hl]
 	xor a
 	ld [MenuSelection], a
 	jr HelpIndex
@@ -585,6 +606,8 @@ HelpLoop::
 	call GetXYZAddressInHLAndChangeBank
 	call DescribeSector
 	call Time_NoClock
+	ld hl, Flags
+	res 7, [hl]
 	jp WaitUpdateBackground
 
 .left

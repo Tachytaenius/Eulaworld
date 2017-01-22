@@ -3,6 +3,7 @@
 ; Refer to file LICENSE for information on the GPL 3.
 
 NewGame::
+	call InitPlayer
 	call GenerateWorld
 	call ClearScreen
 	ld a, 7 | (3 << 4)
@@ -21,6 +22,14 @@ NewGame::
 Text_GameStart::
 	text "Push start for help."
 	done
+
+InitPlayer::
+	ld a, 1
+	ld [PlayerIdentity], a
+	ld d, 100
+	ld hl, PlayerHits
+	ld bc, 4
+	jp SetForwards
 
 GenerateWorld::
 	ld a, 1
@@ -48,14 +57,14 @@ GenerateBank::
 	ld de, 64
 	ld bc, 64
 	ld hl, $D000
-	call RandomFillForwardsSkipChunk_DivideBy8
+	call RandomFillForwardsSkipChunk_DivideBy32
 	ld bc, 64
 	ld hl, $D002
 	call RandomSetBit0ForwardsSkipChunk_Threshold10
 	ld de, 64
 	ld bc, 64
 	ld hl, $D003
-	call RandomFillForwardsSkipChunk_DivideBy8
+	call RandomFillForwardsSkipChunk_DivideBy32
 	ld de, 64
 	ld bc, 65
 	ld hl, $D004
@@ -63,8 +72,24 @@ GenerateBank::
 	ld de, 64
 	ld bc, 64
 	ld hl, $D005
-	call RandomFillForwardsSkipChunk_DivideBy8
+	call RandomFillForwardsSkipChunk_DivideBy32
 	ld de, 64
-	ld bc, 65
+	ld bc, 64
 	ld hl, $D006
-	jp RandomFillForwardsSkipChunk
+	call RandomFillForwardsSkipChunk
+	ld bc, 32
+	ld hl, $D008
+.loop
+	push bc
+	ld de, 8
+	ld bc, 8
+	push hl
+	call RandomFillForwardsSkipChunk_DivideBy32
+	pop hl
+	ld bc, 64
+	add hl, bc
+	pop bc
+	or c
+	dec bc
+	jr nz, .loop
+	ret

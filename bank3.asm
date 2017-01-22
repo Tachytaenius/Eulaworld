@@ -5,5 +5,3 @@
 INCLUDE "macros.asm"
 
 SECTION "bank3", ROMX, BANK[$3]
-INCLUDE "calculator.asm"
-INCLUDE "tables/sine.asm"

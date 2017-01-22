@@ -184,8 +184,17 @@ EmbeddedSetForwards::
 	ld hl, _VRAM
 	ld bc, FontEnd - Font
 	call CopyDoubleForwards
+	ld a, $57
+	ld [$9A48], a
+	inc a
+	ld [$9A49], a
+	ld a, $C2
+	ld [CursorPos], a
+	ld a, $1C
+	ld [CursorPos + 1], a
 	pop af
 	cp $11
+	
 	jr z, .non_CGB
 	
 	ld a, 1
@@ -208,31 +217,19 @@ EmbeddedSetForwards::
 	ld [rIF], a
 	ld a, 1 ; VBlank
 	ld [rIE], a
-	ld hl, $C208
-	ld a, h
-	ld [CursorPos], a
-	ld a, l
-	ld [CursorPos + 1], a
+	xor a
+	cpl
+	ld [DownJoypad], a
 	ei
 
 	; call WashingMashineJoke
 
 	; If you need to test something quickly, put it here.
-
-	ld a, [ROMBank]
-	push af
-	ld a, 3
-	ld [ROMBank], a
-	ld [$2000], a
-	call Sine
-	pop af
-	ld [ROMBank], a
+	
+	; end of test
 
 	ld de, Text_Eulaworld
 	call PrintText
-	xor a
-	cpl
-	ld [DownJoypad], a
 	call WaitForStart
 	jp MainMenu
 
@@ -263,4 +260,3 @@ INCLUDE "mainmenu.asm"
 INCLUDE "washingmachinejoke.asm"
 
 INCLUDE "memory.asm" ; memory.asm needs to know what RAM type our cartridge has. Said information lies within home.asm.
-;*** End Of File ***

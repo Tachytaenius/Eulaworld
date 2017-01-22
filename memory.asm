@@ -46,7 +46,7 @@ ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-Flags:: ; 6 = Done call SeedRandom2_? ; 5 = Inside sector building? 4 = Don't update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 2? (I think.) 1 = Update Background 1? 0 = Initialized joypad?
+Flags:: ; 7 = Don't worry about scroll prompts while using PrintText? 6 = Done call SeedRandom2_? 5 = Inside sector building? 4 = Don't update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 2? (I think.) 1 = Update Background 1? 0 = Initialized joypad?
 	ds 1
 DownJoypad::;;;;;;7 START
 	ds 1         ;6 SELECT
@@ -81,4 +81,6 @@ SeedD::
 SeedE::
 	ds 1
 SeedH::
+	ds 1
+ScrollCount::
 	ds 1

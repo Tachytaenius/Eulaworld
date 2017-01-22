@@ -23,7 +23,7 @@ RandomFillForwards::
 	dec bc
 	jr RandomFillForwards
 
-RandomFillForwardsSkipChunk_DivideBy8::
+RandomFillForwardsSkipChunk_DivideBy32::
 	;set the first byte of bc chunks of de size forward from hl to a completely random value and divide it by 8
 	ld a, b
 	or c
@@ -33,6 +33,22 @@ RandomFillForwardsSkipChunk_DivideBy8::
 	ld a, [SeedH]
 	srl a
 	srl a
+	srl a
+	srl a
+	srl a
+	ld [hl], a
+	add hl, de
+	dec bc
+	jr RandomFillForwardsSkipChunk_DivideBy32
+
+RandomFillForwardsSkipChunk_DivideBy8::
+	;set the first byte of bc chunks of de size forward from hl to a completely random value and divide it by 8
+	ld a, b
+	or c
+	ret z
+
+	call Random2
+	ld a, [SeedH]
 	srl a
 	srl a
 	srl a
@@ -52,7 +68,7 @@ RandomFillForwardsSkipChunk::
 	ld [hl], a
 	add hl, de
 	dec bc
-	jr RandomFillForwardsSkipChunk_DivideBy8
+	jr RandomFillForwardsSkipChunk
 
 
 RandomSetBit0ForwardsSkipChunk_Threshold10::
@@ -147,4 +163,26 @@ ConvertNumberHL::
 	call SbcHlBc
 	ld [de], a
 	inc de
+	ret
+
+CleanBuffer::
+	; Turn all bytes of "0" to $FD in the 8 bytes after the Buffer address until a non-"0" item is hit.
+	push hl
+	ld hl, Buffer
+	push bc
+	ld b, 8
+.loop
+	xor a
+	cp b
+	jr z, .done
+	ld a, [hl]
+	cp "0"
+	jr nz, .done
+	ld a, $FD
+	ld [hl], a
+	inc hl
+	jr .loop
+.done
+	pop bc
+	pop hl
 	ret

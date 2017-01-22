@@ -6,4 +6,4 @@ LoadGame::
 	di
 	halt
 	nop
-	jr LoadGameT
+	jr LoadGame

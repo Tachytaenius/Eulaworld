@@ -50,8 +50,7 @@ WaitForInput::
 	ld a, [PressedJoypad]
 	and $FF
 	jr z, .loop
-	call Random
-	ret
+	jp Random
 
 WaitForStart::
 	halt
@@ -67,8 +66,7 @@ WaitForStart::
 	ld a, [PressedJoypad]
 	and JOY_START
 	jr z, .loop
-	call Random
-	ret
+	jp Random
 
 WaitForAllButtonsToBeReleased::
 	halt
@@ -77,5 +75,4 @@ WaitForAllButtonsToBeReleased::
 	ld a, [DownJoypad]
 	and a
 	jr nz, WaitForAllButtonsToBeReleased
-	call Random
-	ret
+	jp Random

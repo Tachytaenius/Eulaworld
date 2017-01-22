@@ -79,11 +79,18 @@ Random::
 	pop bc
 	ret
 
+Dead::
+	ld de, Text_GameOver
+	call PrintText
 Error::
 	; Work-in-progress.
 	halt
 	nop
 	jr Error
+
+Text_GameOver::
+	text "Game over!"
+	linedone
 
 SbcHlBc::
 	push bc

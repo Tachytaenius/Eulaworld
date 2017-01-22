@@ -57,6 +57,15 @@ VBlank::
 	jr .skip
 
 ShiftLineUp::
+	ld a, [Flags]
+	bit 7, a
+	jr nz, .skip
+	ld a, [ScrollCount]
+	inc a
+	ld [ScrollCount], a
+	cp 18
+	call z, .wait
+.skip
 	ld hl, BGTransferDataGutter
 	ld de, BGTransferData
 	ld bc, BGTransferDataEnd - BGTransferData
@@ -65,6 +74,17 @@ ShiftLineUp::
 	ld bc, 20
 	ld hl, BGTransferDataEnd - 20
 	jp SetForwards
+
+.wait
+	call WaitUpdateBackground
+	xor a
+	ld [ScrollCount], a
+	ld a, 8
+	ld [rSCY], a
+	call WaitForStart
+	xor a
+	ld [rSCY], a
+	ret
 
 ClearScreen::
 	ld d, " "
@@ -78,6 +98,8 @@ PrintText::
 	ld h, a
 	ld a, [CursorPos + 1]
 	ld l, a
+	xor a
+	ld [ScrollCount], a
 .loop
 	ld a, h
 	cp $C2
@@ -99,6 +121,8 @@ PrintText::
 .not_newline
 	cp TXT_DONE
 	jr z, .done
+	cp TXT_SKIP
+	jr z, .skip
 	ld [hli], a
 	jr .loop
 

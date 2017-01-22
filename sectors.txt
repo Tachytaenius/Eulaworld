@@ -27,34 +27,40 @@ A bank's worth of sectors is 8 by 4 sectors, times 2 for the underground.
 There are 16 by 8 by 2 sectors in total, because there are 2 x 2 bank's worths in the game world.
 
 Entities:
-ID	TYPE			SPAWNHP	SPAWNEP	SPAWNMP	SPAWNCP
-00	Nothing			0		0		0		0
-01	Human			100		100		100		100
-02	Wolf			100		100		100		100
-03	Fox				100		100		100		100
-04	Cat				100		100		100		100
-05	Elf				100		100		100		100
-06	LoAmaaciInu		100		100		100		100
-07	LoAmaaciKitsune	100		100		100		100
-08	LoAmaaciNeko	100		100		100		100
-09	GreenSlime		25		50		0		0
-0A	Mancubus		255		255		0		0
-0B	Revenant		125		80		150		10
-0C	Pinky			150		100		0		0
-0D	RedSlime		50		100		0		0
-0E	BlueSlime		100		200		0		0
-0F	StoneGolem		200		50		20		20
-10	IronGolem		255		125		10		30
-11	Rotworm			75		50		0		0
-12	Bloodworm		75		0		50		0
-13	Pig				50		50		0		0
-14	Cow				70		0		0		0
-15	Sheep			40		0		0		0
-16	Chicken			20		0		0		0
-17	Dwarf			100		100		100		100
-18	HiAmaaciInu		100		100		100		100
-19	HiAmaaciKitsune	100		100		100		100
-1A	HiAmaaciNeko	100		100		100		100
+ID	TYPE			SPAWNHP	SPAWNEP	SPAWNMP	SPAWNCP	SPAWNAL
+00	Nothing			0		0		0		0		NULL
+01	Human			100		100		100		100		NEUT
+02	Wolf			100		100		100		100		NEUT
+03	Fox				100		100		100		100		NEUT
+04	Cat				100		100		100		100		NEUT
+05	Elf				100		100		100		100		NEUT
+06	AmaaciInu		100		100		100		100		NEUT
+07	AmaaciKitsune	100		100		100		100		NEUT
+08	AmaaciNeko		100		100		100		100		NEUT
+09	GreenSlime		25		50		0		0		PASS
+0A	Mancubus		255		255		0		0		HOST
+0B	Revenant		125		80		150		10		HOST
+0C	Pinky			150		100		0		0		HOST
+0D	RedSlime		50		100		0		0		PASS
+0E	BlueSlime		100		200		0		0		PASS
+0F	StoneGolem		200		50		20		20		NEUT
+10	IronGolem		255		125		10		30		NEUT
+11	Rotworm			75		50		0		0		HOST
+12	Bloodworm		75		0		50		0		HOST
+13	Pig				50		50		0		0		PASS
+14	Cow				70		0		0		0		PASS
+15	Sheep			40		0		0		0		PASS
+16	Chicken			20		0		0		0		PASS
+17	Dwarf			100		100		100		100		NEUT
+18	Drow			100		100		100		100		NEUT
+19	Gnome			100		100		100		100		NEUT
+1A	Cacodemon		150		0		150		0		HOST
+1B	Imp				100		100		100		100		HOST
+1C	Beholder		255		255		255		255		HOST
+1D	KuoToa			100		100		100		100		HOST
+1E	Horse			100		100		100		100		NEUT
+1F	Unicorn			100		100		100		100		NEUT
+
 
 Biomes:
 ID	SURFACE		UNDERGROUND

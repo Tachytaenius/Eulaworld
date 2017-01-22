@@ -89,15 +89,10 @@
 	charmap "z", $54
 	charmap "*", $55
 	charmap "_", $56
-	charmap "¯", $57
-	charmap "–", $58
-	charmap "+", $59
-	charmap "-", $5A
-	charmap "`", $5B
-	charmap "/", $5C
-	charmap "@", $5D
-	charmap "'", $5E
-	charmap "%", $5F
+	; $57 is the left scroll-pause prompt
+	; $58 is the right scroll-pause prompt
+	charmap "-", $5D
+	charmap "+", $5E
 	charmap "[", $60 ; Bed symbol.
 	charmap "]", $61 ; Table and chair symbol.
 	charmap "↓", $62 ; Workbench symbol.
