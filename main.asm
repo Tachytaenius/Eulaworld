@@ -372,7 +372,166 @@ Text_ThisButtonDoesNothingYet::
 	line "nothing yet."
 	linedone
 
+GetEntity::
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [hl]
+	ld hl, .biome_table
+	call JumpTable
+	ret
+
+.biome_table
+	dw .plains
+	dw .forest
+	dw .sand
+	dw .ice
+	dw .savanna
+	dw .mesa
+	dw .jungle
+	dw .heaven
+	dw .diorite
+	dw .limestone
+	dw .obsidian
+	dw .ice_
+	dw .granite
+	dw .swamp
+	dw .andesite
+	dw .hell
+
+.plains
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, PlainsEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.forest
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, ForestEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.sand
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, SandEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.ice
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, IceEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.savanna
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, SavannaEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.mesa
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, MesaEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.jungle
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, JungleEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.heaven
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, HeavenEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.diorite
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, DioriteEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.limestone
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, LimestoneEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.obsidian
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, ObsidianEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.ice_
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, Ice_Entities
+	rst LoadTable
+	ld a, l
+	ret
+
+.granite
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, GraniteEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.swamp
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, SwampEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.andesite
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, AndesiteEntities
+	rst LoadTable
+	ld a, l
+	ret
+
+.hell
+	call GetXYZAddressInHLAndChangeBank
+	ld a, [Buffer]
+	ld hl, HellEntities
+	rst LoadTable
+	ld a, l
+	ret
+
 TickWorld::
+	xor a
+	ld [CurrentLoop], a
+.loop
+	cp 7
+	ret z
+	ld [CurrentLoop], a
 	call GetXYZAddressInHLAndChangeBank
 	ld bc, 8
 	add hl, bc
@@ -383,7 +542,9 @@ TickWorld::
 	ld a, [hl]
 	ld hl, Creatures
 	call JumpTable
-	ret
+	ld a, [CurrentLoop]
+	inc a
+	jr .loop
 
 Creatures::
 	dw Nothing
@@ -1014,5 +1175,247 @@ Text_Hell::
 	text "a nether"
 	line "biome."
 	linedone
+
+PlainsEntities::
+	db PIG
+	db 0
+	db COW
+	db 0
+	db SHEEP
+	db 0
+	db CHICKEN
+	db 0
+	db FOX
+	db 0
+	db AMAACIKITSUNE
+	db 0
+	db HUMAN
+
+ForestEntities::
+	db ELF
+	db 0
+	db WOLF
+	db 0
+	db GREENSLIME
+	db 0
+	db REDSLIME
+	db 0
+	db BLUESLIME
+	db 0
+	db FOX
+	db 0
+	db AMAACIINU
+
+SandEntities::
+	db ROTWORM
+	db 0
+	db DWARF
+	db 0
+	db GNOME
+	db 0
+	db CACODEMON
+	db 0
+	db IMP
+	db 0
+	db BLOODWORM
+	db 0
+	db AMAACIINU
+
+IceEntities::
+	db STONEGOLEM
+	db 0
+	db IRONGOLEM
+	db 0
+	db KUOTOA
+	db 0
+	db SHEEP
+	db 0
+	db WOLF
+	db 0
+	db AMAACIINU
+	db 0
+	db AMAACIKITSUNE
+
+SavannaEntities::
+	db REDSLIME
+	db 0
+	db GREENSLIME
+	db 0
+	db HORSE
+	db 0
+	db IMP
+	db 0
+	db PIG
+	db 0
+	db COW
+	db 0
+	db PINKY
+
+MesaEntities::
+	db GNOME
+	db 0
+	db REVENANT
+	db 0
+	db MANCUBUS
+	db 0
+	db HORSE
+	db 0
+	db DWARF
+	db 0
+	db HUMAN
+	db 0
+	db AMAACINEKO
+
+JungleEntities::
+	db CAT
+	db 0
+	db AMAACINEKO
+	db 0
+	db FOX
+	db 0
+	db AMAACIKITSUNE
+	db 0
+	db WOLF
+	db 0
+	db AMAACIINU
+	db 0
+	db ELF
+
+HeavenEntities::
+	db UNICORN
+	db 0
+	db BLUESLIME
+	db 0
+	db ELF
+	db 0
+	db HORSE
+	db 0
+	db WOLF
+	db 0
+	db DWARF
+	db 0
+	db AMAACINEKO
+
+DioriteEntities::
+	db DROW
+	db 0
+	db DWARF
+	db 0
+	db HUMAN
+	db 0
+	db ELF
+	db 0
+	db IMP
+	db 0
+	db KUOTOA
+	db 0
+	db PINKY
+
+LimestoneEntities::
+	db DROW
+	db 0
+	db IMP
+	db 0
+	db PINKY
+	db 0
+	db REVENANT
+	db 0
+	db MANCUBUS
+	db 0
+	db CACODEMON
+	db 0
+	db CAT
+
+ObsidianEntities::
+	db DROW
+	db 0
+	db ELF
+	db 0
+	db BLUESLIME
+	db 0
+	db AMAACINEKO
+	db 0
+	db DWARF
+	db 0
+	db KUOTOA
+	db 0
+	db ROTWORM
+
+Ice_Entities::
+	db BLOODWORM
+	db 0
+	db DROW
+	db 0
+	db GNOME
+	db 0
+	db REVENANT
+	db 0
+	db ROTWORM
+	db 0
+	db FOX
+	db 0
+	db HUMAN
+	db 0
+	db GREENSLIME
+
+GraniteEntities::
+	db DROW
+	db 0
+	db DWARF
+	db 0
+	db HUMAN
+	db 0
+	db ELF
+	db 0
+	db IMP
+	db 0
+	db KUOTOA
+	db 0
+	db REVENANT
+
+SwampEntities::
+	db KUOTOA
+	db 0
+	db DROW
+	db 0
+	db ELF
+	db 0
+	db IMP
+	db 0
+	db REVENANT
+	db 0
+	db GREENSLIME
+	db 0
+	db BLUESLIME
+
+AndesiteEntities::
+	db DROW
+	db 0
+	db DWARF
+	db 0
+	db HUMAN
+	db 0
+	db ELF
+	db 0
+	db IMP
+	db 0
+	db KUOTOA
+	db 0
+	db MANCUBUS
+
+HellEntities::
+	db REDSLIME
+	db 0
+	db MANCUBUS
+	db 0
+	db REVENANT
+	db 0
+	db PINKY
+	db 0
+	db STONEGOLEM
+	db 0
+	db IRONGOLEM
+	db 0
+	db IMP
 
 INCLUDE "gamemenu.asm"

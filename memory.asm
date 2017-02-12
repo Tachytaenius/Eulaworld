@@ -42,6 +42,10 @@ CursorPos::
 	ds 2
 Buffer::
 	ds 8
+Input::
+	ds 1
+CurrentLoop::
+	ds 1
 ROMBank::
 	ds 1
 WRAMBank::

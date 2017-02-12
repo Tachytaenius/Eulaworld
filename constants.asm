@@ -2,7 +2,22 @@
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
-; What bits are used for the X, Y an Z positions?
+; Useful constant definitions taken from pokecrystal by pret. I love those guys.
+const_def: MACRO
+const_value = 0
+ENDM
+
+const: MACRO
+\1 EQU const_value
+const_value = const_value + 1
+ENDM
+
+shift_const: MACRO
+\1 EQU (1 << const_value)
+const_value = const_value + 1
+ENDM
+
+; What bits are used for the X, Y and Z positions?
 COORD_X			EQU %01110000
 COORD_Y			EQU %10000000
 COORD_Z			EQU %00001111
@@ -28,3 +43,38 @@ TXT_DONE		EQU $FF
 ; Time constants.
 TIME_HOUR		EQU %11100000
 TIME_MINUTE		EQU %00011111
+
+; Entitiy constants.
+	const_def
+	const NOTHING
+	const HUMAN
+	const WOLF
+	const FOX
+	const CAT
+	const ELF
+	const AMAACIINU
+	const AMAACIKITSUNE
+	const AMAACINEKO
+	const GREENSLIME
+	const MANCUBUS
+	const REVENANT
+	const PINKY
+	const REDSLIME
+	const BLUESLIME
+	const STONEGOLEM
+	const IRONGOLEM
+	const ROTWORM
+	const BLOODWORM
+	const PIG
+	const COW
+	const SHEEP
+	const CHICKEN
+	const DWARF
+	const DROW
+	const GNOME
+	const CACODEMON
+	const IMP
+	const BEHOLDER
+	const KUOTOA
+	const HORSE
+	const UNICORN

@@ -61,7 +61,6 @@ ID	TYPE			SPAWNHP	SPAWNEP	SPAWNMP	SPAWNCP	SPAWNAL
 1E	Horse			100		100		100		100		NEUT
 1F	Unicorn			100		100		100		100		NEUT
 
-
 Biomes:
 ID	SURFACE		UNDERGROUND
 00	Plains		Diorite Cave
@@ -118,7 +117,6 @@ ID	ITEM
 05	Barley
 06	Corn
 07	Clevergrass
-
 
 Forest Resources:
 ID	ITEM
@@ -284,3 +282,180 @@ ID	ITEM
 05	Calculite
 06	Silicon
 07	Erchius
+
+Plains Entities:
+ID	ITEM
+00	
+01	Pig
+02	Cow
+03	Sheep
+04	Chicken
+05	Fox
+06	AmaaciKitsune
+07	Human
+
+Forest Entities:
+ID	ITEM
+00	
+01	Elf
+02	Wolf
+03	GreenSlime
+04	RedSlime
+05	BlueSlime
+06	Fox
+07	AmaaciInu
+
+Sand Desert Entities:
+ID	ITEM
+00	
+01	Rotworm
+02	Dwarf
+03	Gnome
+04	Cacodemon
+05	Imp
+06	Bloodworm
+07	AmaaciInu
+
+Ice Desert Entities:
+ID	ITEM
+00	
+01	StoneGolem
+02	IronGolem
+03	KuoToa
+04	Sheep
+05	Wolf
+06	AmaaciInu
+07	AmaaciKitsune
+
+Savanna Entities:
+ID	ITEM
+00	
+01	RedSlime
+02	GreenSlime
+03	Horse
+04	Imp
+05	Pig
+06	Cow
+07	Pinky
+
+Mesa Entities:
+ID	ITEM
+00	
+01	Gnome
+02	Revenant
+03	Mancubus
+04	Horse
+05	Dwarf
+06	Human
+07	AmaaciNeko
+
+Jungle Entities:
+ID	ITEM
+00	
+01	Cat
+02	AmaaciNeko
+03	Fox
+04	AmaaciKitsune
+05	Wolf
+06	AmaaciInu
+07	Elf
+
+Aether Entities:
+ID	ITEM
+00	
+01	Unicorn
+02	BlueSlime
+03	Elf
+04	Horse
+05	Wolf
+06	Dwarf
+07	AmaaciNeko
+
+Diorite Cave Entities:
+ID	ITEM
+00	
+01	Drow
+02	Dwarf
+03	Human
+04	Elf
+05	Imp
+06	KuoToa
+07	Pinky
+
+Limestone Cave Entities:
+ID	ITEM
+00	
+01	Drow
+02	Imp
+03	Pinky
+04	Revenant
+05	Mancubus
+06	Cacodemon
+07	Cat
+
+Obsidian Cave Entities:
+ID	ITEM
+00	
+01	Drow
+02	Elf
+03	BlueSlime
+04	AmaaciNeko
+05	Dwarf
+06	KuoToa
+07	Rotworm
+
+Ice Cave Entities:
+ID	ITEM
+00	
+01	Bloodworm
+02	Drow
+03	Gnome
+04	Revenant
+04	Rotworm
+05	Fox
+06	Human
+07	GreenSlime
+
+Granite Cave Entities:
+ID	ITEM
+00	
+01	Drow
+02	Dwarf
+03	Human
+04	Elf
+05	Imp
+06	KuoToa
+07	Revenant
+
+Underground Swamp Entities:
+ID	ITEM
+00	
+01	KuoToa
+02	Drow
+03	Elf
+04	Imp
+05	Revenant
+06	GreenSlime
+07	BlueSlime
+
+Andesite Cave Entities:
+ID	ITEM
+00	
+01	Drow
+02	Dwarf
+03	Human
+04	Elf
+05	Imp
+06	KuoToa
+07	Mancubus
+
+Nether Entities:
+ID	ITEM
+00	
+01	Redslime
+02	Mancubus
+03	Revenant
+04	Pinky
+05	StoneGolem
+06	IronGolem
+07	Imp
