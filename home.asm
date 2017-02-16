@@ -222,7 +222,7 @@ EmbeddedSetForwards::
 	ld [DownJoypad], a
 	ei
 
-	call WashingMashineJoke
+	; call WashingMashineJoke
 
 	; If you need to test something quickly, put it here.
 	
