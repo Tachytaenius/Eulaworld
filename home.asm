@@ -5,19 +5,19 @@
 INCLUDE "macros.asm"
 
 SECTION	"Org $00", HOME[$00]
-RST_00:
+RST_00::
 	ld [Buffer + 1], a
 	jp Farcall
 
 SECTION	"Org $08", HOME[$08]
-RST_08:
+RST_08::
 	ld [ROMBank], a
 	ld [$2000], a
 	ret
 	; no need for anything along the lines of jp Bankswitch, it's all here
 
 SECTION	"Org $10", HOME[$10]
-RST_10:
+RST_10::
 	push de
 	ld e, a
 	ld d, 0
@@ -31,11 +31,11 @@ endr
 	jp hl
 
 ;	SECTION	"Org $18", HOME[$18]
-;RST_18:
+;RST_18::
 ;	jp	$100
 
 SECTION	"Org $20", HOME[$20]
-RST_20:
+RST_20::
 	push de
 	ld e, a
 	ld d, 0
@@ -49,35 +49,35 @@ endr
 	ret
 
 ;	SECTION	"Org $28", HOME[$28]
-;RST_28:
+;RST_28::
 ;	jp	$100
 ;
 SECTION	"Org $30", HOME[$30]
-RST_30:
+RST_30::
 	jp	$100
 
 SECTION	"Org $38", HOME[$38]
-RST_38:
+RST_38::
 	jp	$100
 
 SECTION	"V-Blank IRQ Vector", HOME[$40]
-VBL_VECT:
+VBL_VECT::
 	jp VBlank
 
 SECTION	"LCD IRQ Vector", HOME[$48]
-LCD_VECT:
-	reti
+LCD_VECT::
+	jp LCDBlank
 
 SECTION	"Timer IRQ Vector", HOME[$50]
-TIMER_VECT:
+TIMER_VECT::
 	reti
 
 SECTION	"Serial IRQ Vector", HOME[$58]
-SERIAL_VECT:
+SERIAL_VECT::
 	reti
 
 SECTION	"Joypad IRQ Vector", HOME[$60]
-JOYPAD_VECT:
+JOYPAD_VECT::
 	reti
 
 SECTION	"Header", HOME[$100]
@@ -212,21 +212,24 @@ EmbeddedSetForwards::
 	jr nz, .loop
 
 .returnfromskip
+	ld a, 94
+	ld [rLYC], a
 	call StartLCD
-	xor a
-	ld [rIF], a
-	ld a, 1 ; VBlank
+	ld a, $F3
 	ld [rIE], a
-	xor a
+	dec a
+	ld [rIF], a
 	cpl
 	ld [DownJoypad], a
 	ei
 
-	; call WashingMashineJoke
-
 	; If you need to test something quickly, put it here.
-	
-	; end of test
+	ld a, 3
+	ld [ROMBank], a
+	rst BankSwitch
+	ld a, $10
+	call TalkATextDE
+	jp Error
 
 	ld de, Text_Eulaworld
 	call PrintText
@@ -257,6 +260,5 @@ INCLUDE "video.asm"
 INCLUDE "misc.asm"
 INCLUDE "text.asm"
 INCLUDE "mainmenu.asm"
-INCLUDE "washingmachinejoke.asm"
 
 INCLUDE "memory.asm" ; memory.asm needs to know what RAM type our cartridge has. Said information lies within home.asm.

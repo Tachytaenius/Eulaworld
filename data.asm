@@ -109,17 +109,20 @@ CopyDoubleForwards::
 	dec bc
 	jr CopyDoubleForwards
 
-;CopyBackwards::
-;	;copy bc bytes backward from hl to de
-;	ld a, b
-;	or c
-;	ret z
-;	ld a, [hld]
-;	ld [de], a
-;	dec de
-;	inc bc
-;	jr CopyBackwards
+CopyBackwards::
+	;copy bc bytes backward from de to hl
+	ld a, b
+	or c
+	ret z
+	ld a, [de]
+	ld [hld], a
+	dec de
+	dec bc
+	jr CopyBackwards
 
+PreLoopCopyForwardsSkip::
+	inc de ; This has to happen after ld a, [de], of course.
+	inc hl
 CopyForwardsSkip::
 	;copy bc bytes forward from de to hl skipping a byte if it's equal to [Skippable]
 	ld a, b
@@ -128,14 +131,15 @@ CopyForwardsSkip::
 
 	push bc
 	ld a, [de]
-	inc de ; This has to happen after ld a, [de], of course.
 	ld b, a
 	ld a, [Skippable]
 	cp b
 	pop bc
 	dec bc ; Don't forget to decrement the counter!!
-	jr nz, CopyForwardsSkip
-	ld [hli], a ; Wait... do I want to not move hl?
+	jr z, PreLoopCopyForwardsSkip
+	ld a, [de] ; by now we know it's not [Skippable]
+	inc de ; This has to happen after ld a, [de], of course.
+	ld [hli], a
 	jr CopyForwardsSkip
 
 ConvertNumberHLPoint::
@@ -166,7 +170,7 @@ ConvertNumberHL::
 	ret
 
 CleanBuffer::
-	; Turn all bytes of "0" to $FD in the 8 bytes after the Buffer address until a non-"0" item is hit.
+	; Turn all bytes of "0" to TXT_SKIP in the 8 bytes after the Buffer address until a non-"0" item is hit.
 	push hl
 	ld hl, Buffer
 	push bc
@@ -178,7 +182,7 @@ CleanBuffer::
 	ld a, [hl]
 	cp "0"
 	jr nz, .done
-	ld a, $FD
+	ld a, TXT_SKIP
 	ld [hl], a
 	inc hl
 	jr .loop

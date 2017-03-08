@@ -82,6 +82,7 @@ Random::
 Dead::
 	ld de, Text_GameOver
 	call PrintText
+	call WaitUpdateBackground
 Error::
 	; Work-in-progress.
 	halt
@@ -217,4 +218,14 @@ Random2::
 	pop de
 	pop bc
 	pop af
+	ret
+
+SwapHlDe::
+	ld a, d
+	ld d, h
+	ld h, a
+	ld a, e
+	ld e, l
+	ld l, a
+	ld a, d
 	ret

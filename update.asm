@@ -20,6 +20,8 @@ endr
 UpdateBackground::
 	ld bc, SCRN_X_B
 	ld hl, .table
+	ld a, [Flags]
+	ld d, a
 	ld a, [NextDrawLine]
 	rst JumpTable
 	ret
@@ -169,45 +171,3 @@ UpdateBackground::
 	dw .sixteen
 	dw .seventeen
 	dw .eighteen
-
-UpdateBackground2::
-	ld a, $FF
-	ld [Skippable], a
-	ld bc, SCRN_X_B
-	ld hl, .table
-	ld a, [NextDrawLine]
-	rst JumpTable
-	ret
-.one
-	ld hl, $9800 + (SCRN_X_B * 0) + (12 * 0)
-	ld de, BGTransferData + (SCRN_X_B * 0)
-	call CopyForwardsSkip
-	ld a, 1
-	ld [NextDrawLine], a
-	ret
-.two
-	ld hl, $9800 + (SCRN_X_B * 1) + (12 * 1)
-	ld de, BGTransferData + (SCRN_X_B * 1)
-	call CopyForwardsSkip
-	ld a, 2
-	ld [NextDrawLine], a
-	ret
-.three
-	ld hl, $9800 + (SCRN_X_B * 2) + (12 * 2)
-	ld de, BGTransferData + (SCRN_X_B * 2)
-	call CopyForwardsSkip
-	ld a, 3
-	ld [NextDrawLine], a
-	ret
-.four
-	ld hl, $9800 + (SCRN_X_B * 3) + (12 * 3)
-	ld de, BGTransferData + (SCRN_X_B * 3)
-	call CopyForwardsSkip
-	ld a, 0
-	ld [NextDrawLine], a
-	ret
-.table
-	dw .one
-	dw .two
-	dw .three
-	dw .four

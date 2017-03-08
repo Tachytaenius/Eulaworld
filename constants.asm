@@ -36,13 +36,16 @@ JOY_B			EQU %00000010
 JOY_A			EQU %00000001
 
 ; Text constants.
-TXT_SKIP		EQU $FD
-TXT_NEWLINE		EQU	$FE
-TXT_DONE		EQU $FF
+TXT_SKIP		EQU $5F
+TXT_NEWLINE		EQU	$6F
+TXT_DONE		EQU $7F
 
 ; Time constants.
 TIME_HOUR		EQU %11100000
 TIME_MINUTE		EQU %00011111
+
+; Talk constants.
+TLK_ID			EQU	%11100000
 
 ; Entitiy constants.
 	const_def

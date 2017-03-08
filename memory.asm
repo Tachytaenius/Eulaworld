@@ -11,9 +11,6 @@ BGTransferDataGutter::
 BGTransferData::
 	ds $168
 BGTransferDataEnd::
-BGTransferData2::
-	ds 80
-BGTransferData2End::
 Player::
 PlayerIdentity::
 	ds 1
@@ -50,7 +47,7 @@ ROMBank::
 	ds 1
 WRAMBank::
 	ds 1
-Flags:: ; 7 = Don't worry about scroll prompts while using PrintText? 6 = Done call SeedRandom2_? 5 = Inside sector building? 4 = Don't update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Update Background 2? (I think.) 1 = Update Background 1? 0 = Initialized joypad?
+Flags:: ; 7 = Don't worry about scroll prompts while using PrintText? 6 = Done call SeedRandom2_? 5 = Inside sector building? 4 = Don't update screen after PrintText call? 3 = Not running game on a Game Boy Colour? 2 = Top 12 lines of screen uses 8800 to 97FF? 1 = Update Background? 0 = Initialized joypad?
 	ds 1
 DownJoypad::;;;;;;7 START
 	ds 1         ;6 SELECT
@@ -58,8 +55,10 @@ ReleasedJoypad::;;5 B
 	ds 1         ;4 A
 PressedJoypad::;;;3 DOWN
 	ds 1         ;2 UP
-NextDrawLine:    ;1 LEFT
+NextDrawLine::   ;1 LEFT
 	ds 1         ;0 RIGHT
+NextDrawLine2::
+	ds 1 
 NextWriteLine::
 	ds 1
 RandomAdd::
@@ -88,3 +87,7 @@ SeedH::
 	ds 1
 ScrollCount::
 	ds 1
+DisabledInterrupts::
+	ds 1
+Face::
+	ds 2

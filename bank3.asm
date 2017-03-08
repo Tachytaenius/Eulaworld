@@ -5,3 +5,5 @@
 INCLUDE "macros.asm"
 
 SECTION "bank3", ROMX, BANK[$3]
+INCLUDE "talk.asm"
+INCLUDE "faces.asm"
