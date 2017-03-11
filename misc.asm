@@ -229,3 +229,39 @@ SwapHlDe::
 	ld l, a
 	ld a, d
 	ret
+
+SetWorld::
+	ld a, [ROMBank]
+	push af
+	ld a, 4
+	ld [ROMBank], a
+	rst BankSwitch
+	ld a, 1
+	ld [WRAMBank], a
+	ld [rSVBK], a
+	ld de, $4000
+	ld bc, $1000
+	ld hl, $D000
+	call CopyForwards
+	ld a, 2
+	ld [WRAMBank], a
+	ld [rSVBK], a
+	ld d, h
+	ld e, l
+	ld de, $5000
+	ld bc, $1000
+	ld a, 3
+	ld [WRAMBank], a
+	ld [rSVBK], a
+	ld d, h
+	ld e, l
+	ld de, $6000
+	ld bc, $1000
+	ld a, 4
+	ld [WRAMBank], a
+	ld [rSVBK], a
+	ld d, h
+	ld e, l
+	ld de, $7000
+	ld bc, $1000
+	ret

@@ -45,7 +45,7 @@ TIME_HOUR		EQU %11100000
 TIME_MINUTE		EQU %00011111
 
 ; Talk constants.
-TLK_ID			EQU	%11100000
+TLK_ID			EQU	%11000000
 
 ; Entitiy constants.
 	const_def

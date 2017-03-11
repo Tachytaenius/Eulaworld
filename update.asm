@@ -6,9 +6,7 @@ WaitUpdateBackground::
 	push hl
 	ld hl, Flags
 	set 1, [hl]
-rept 9
-	halt
-	nop
+rept 18
 	halt
 	nop
 endr
@@ -20,8 +18,6 @@ endr
 UpdateBackground::
 	ld bc, SCRN_X_B
 	ld hl, .table
-	ld a, [Flags]
-	ld d, a
 	ld a, [NextDrawLine]
 	rst JumpTable
 	ret

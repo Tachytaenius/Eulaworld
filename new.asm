@@ -66,7 +66,7 @@ GenerateBank::
 	ld hl, $D003
 	call RandomFillForwardsSkipChunk_DivideBy32
 	ld de, 64
-	ld bc, 65
+	ld bc, 64
 	ld hl, $D004
 	call RandomFillForwardsSkipChunk
 	ld de, 64

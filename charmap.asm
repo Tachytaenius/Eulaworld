@@ -99,3 +99,6 @@
 	charmap "×", $63 ; Mill symbol.
 	charmap "╬", $64 ; Stone grinder symbol.
 	charmap "±", $65 ; Furnace symbol.
+	charmap "/", $66
+	charmap "`", $66
+	charmap "'", $66

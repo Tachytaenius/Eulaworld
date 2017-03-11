@@ -57,8 +57,6 @@ PressedJoypad::;;;3 DOWN
 	ds 1         ;2 UP
 NextDrawLine::   ;1 LEFT
 	ds 1         ;0 RIGHT
-NextDrawLine2::
-	ds 1 
 NextWriteLine::
 	ds 1
 RandomAdd::
@@ -87,7 +85,5 @@ SeedH::
 	ds 1
 ScrollCount::
 	ds 1
-DisabledInterrupts::
-	ds 1
 Face::
-	ds 2
+	ds 1

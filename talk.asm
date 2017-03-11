@@ -10,8 +10,10 @@
 ;	10: Mouth frame 3.
 ;	11: Mouth frame 4.
 ; A4: Whether xor not to print the whole face.
+; A6 with A7: ID of talker.
 
 TalkATextDE::
+	ld a, [Face]
 	bit 0, a
 	jr z, .skip
 	ld bc, $168
@@ -24,12 +26,9 @@ TalkATextDE::
 	and TLK_ID
 	rlca
 	rlca
-	rlca
-	rlca
-	rlca
 	ld b, 0
 	ld c, a
-	ld de, 3264 ; that's how big a 'face bank' is-- we're also clear from having to worry about de at this point
+	ld de, 2688 ; that's how big a 'face bank' is-- we're also clear from having to worry about de at this point
 	ld hl, Faces
 	push af
 .loop
@@ -40,15 +39,17 @@ TalkATextDE::
 	dec bc
 	jr .loop
 .done
+	ld a, 3 ; perfect placement!!
+	ld [rIE], a
 	pop af
 	call SwapHlDe
 	pop af
 	bit 4, a
-	jr z, .skip2
+	ret z
 	push af
 	call StopLCD
 	ld hl, $8800
-	ld bc, 2880
+	ld bc, 2304
 	call CopyForwards
 	ld hl, BGTransferData
 	ld bc, 240
@@ -65,8 +66,6 @@ TalkATextDE::
 	call WaitUpdateBackground
 	call ExtendedTilesOn
 	pop af
-.skip2
-	
 	ret
 
 FaceData:: ; i hope you've got word wrap on or a really, really big screen/tiny font.

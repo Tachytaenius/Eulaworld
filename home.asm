@@ -6,7 +6,7 @@ INCLUDE "macros.asm"
 
 SECTION	"Org $00", HOME[$00]
 RST_00::
-	ld [Buffer + 1], a
+	ld [Buffer], a
 	jp Farcall
 
 SECTION	"Org $08", HOME[$08]
@@ -113,7 +113,7 @@ SECTION	"Header", HOME[$100]
 	db	$1B ; $1B - ROM + MBC5 + RAM + BATT
 
 	; $0148 (ROM size)
-	db	$01	; $01 - 512Kbit = 64Kbyte = 4 banks
+	db	$02 ; 128 KiB (8 banks)
 
 	; $0149 (RAM size)
 	db	$04 ;4 -   1MBit =128kB =16 banks
@@ -194,9 +194,9 @@ EmbeddedSetForwards::
 	ld [CursorPos + 1], a
 	pop af
 	cp $11
-	
+
 	jr z, .non_CGB
-	
+
 	ld a, 1
 	ld [WRAMBank], a
 	ld [rSVBK], a
@@ -214,23 +214,25 @@ EmbeddedSetForwards::
 .returnfromskip
 	ld a, 94
 	ld [rLYC], a
+	call ExtendedTilesOff
 	call StartLCD
-	ld a, $F3
-	ld [rIE], a
-	dec a
-	ld [rIF], a
+	xor a
 	cpl
+	inc a
+	ld [rIF], a
+	inc a
+	ld [rIE], a
 	ld [DownJoypad], a
 	ei
 
-	; If you need to test something quickly, put it here.
-	ld a, 3
-	ld [ROMBank], a
-	rst BankSwitch
+	; If you need to test something quickly, put it here
 	ld a, $10
-	call TalkATextDE
-	jp Error
-
+	ld [Face], a
+	farcall TalkATextDE
+	call WaitForStart
+	ld a, 1
+	ld [rIE], a
+	call ExtendedTilesOff
 	ld de, Text_Eulaworld
 	call PrintText
 	call WaitForStart
