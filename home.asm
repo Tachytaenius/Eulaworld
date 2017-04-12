@@ -226,12 +226,7 @@ EmbeddedSetForwards::
 	ei
 
 	; If you need to test something quickly, put it here
-	ld a, $10
-	ld [Face], a
-	farcall TalkATextDE
-	call WaitForStart
-	ld a, 1
-	ld [rIE], a
+	
 	call ExtendedTilesOff
 	ld de, Text_Eulaworld
 	call PrintText

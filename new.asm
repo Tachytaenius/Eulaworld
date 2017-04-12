@@ -4,7 +4,7 @@
 
 NewGame::
 	call InitPlayer
-	call GenerateWorld
+	call SetWorld
 	call ClearScreen
 	ld a, 7 | (3 << 4)
 	ld [XYZ], a

@@ -264,4 +264,7 @@ SetWorld::
 	ld e, l
 	ld de, $7000
 	ld bc, $1000
+	pop af
+	ld [ROMBank], a
+	rst BankSwitch
 	ret

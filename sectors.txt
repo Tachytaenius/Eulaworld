@@ -88,23 +88,34 @@ If bit 1 says that the house is made out of stone but bit 0 says there is no hou
 Entity Flags:
 BIT	MEANING
 0	Is inside sector house
-1	N/A
-2	N/A
-3	N/A
-4	N/A
-5	N/A
+1	
+2	
+3	Is child
+4	Is on fire
+5	Is poisoned
 6	Alignment bit 0
 7	Alignment bit 1
 
+Entity Data:
+BIT	MEANING
+0	Hunger bit 0
+1	Hunger bit 1
+2	Hunger bit 2
+3	Hunger bit 3
+4	Air time bit 0
+5	Air time bit 1
+6	Air time bit 2
+7	Air time bit 3
+
 Sector Flags:
 BIT	MEANING
-0	Has a hole (means nothing underground, as when you're down there the holes can't be different to the surface, so they're taken from up here.)
-1	N/A
-2	N/A
-3	N/A
-4	N/A
-5	N/A
-6	N/A
+0	Has a hole (refers to whether there's a water pool when underground, as when you're down there the holes can't be different to the surface, so they're taken from up there, not the data from down underground.)
+1	Extended house information bit 0 (Has a door?)
+2	Extended house information bit 1 (Door open xor door closed?) 
+3	Extended house information bit 2 (Door locked xor unlocked?)
+4	Well been built over hole?
+5	Well bucket dpwm xor up?
+6	Well bucket full xor empty?
 7	N/A
 
 Plains Resources:
