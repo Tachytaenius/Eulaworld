@@ -7,6 +7,4 @@ GameMenu::
 	jp MainLoop
 
 .Action
-	call ForwardTime
-	call TickWorld
-	jp PreMainLoop
+	jp MainLoop

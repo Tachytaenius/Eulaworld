@@ -66,7 +66,7 @@ VBL_VECT::
 
 SECTION	"LCD IRQ Vector", HOME[$48]
 LCD_VECT::
-	jp LCDBlank
+	reti
 
 SECTION	"Timer IRQ Vector", HOME[$50]
 TIMER_VECT::
@@ -180,10 +180,6 @@ EmbeddedSetForwards::
 	xor a
 	ld [rSCX], a
 	ld [rSCY], a
-	ld de, Font
-	ld hl, _VRAM
-	ld bc, FontEnd - Font
-	call CopyDoubleForwards
 	ld a, $57
 	ld [$9A48], a
 	inc a
@@ -212,9 +208,6 @@ EmbeddedSetForwards::
 	jr nz, .loop
 
 .returnfromskip
-	ld a, 94
-	ld [rLYC], a
-	call ExtendedTilesOff
 	call StartLCD
 	xor a
 	cpl
@@ -227,7 +220,6 @@ EmbeddedSetForwards::
 
 	; If you need to test something quickly, put it here
 	
-	call ExtendedTilesOff
 	ld de, Text_Eulaworld
 	call PrintText
 	call WaitForStart

@@ -5,5 +5,8 @@
 INCLUDE "macros.asm"
 
 SECTION "bank3", ROMX, BANK[$3]
-INCLUDE "talk.asm"
-INCLUDE "faces.asm"
+INCLUDE "DevSound/DevSound.asm"
+INCLUDE "DevSound/DevSound_Consts.asm"
+INCLUDE "DevSound/DevSound_Macros.asm"
+INCLUDE "DevSound/DevSound_SongData.asm"
+INCLUDE "DevSound/DevSound_Vars.asm"

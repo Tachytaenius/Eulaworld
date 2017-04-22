@@ -2,24 +2,6 @@
 ; Licensed under the GNU General Public License ver. 3.
 ; Refer to file LICENSE for information on the GPL 3.
 
-LCDBlank::
-	push af
-	ld a, [rSTAT]
-	bit 2, a
-	jr z, .skip
-.loop
-	halt
-	nop
-	ld a, [rSTAT]
-	and %00000011
-	jr nz, .loop
-	ld a, [rLCDC]
-	set 4, a
-	ld [rLCDC], a
-.skip
-	pop af
-	reti
-
 StopLCD::
 	ld a, [rLCDC]
 	rlca
@@ -61,54 +43,19 @@ WaitDMADoneSource::
 	ret
 WaitDMADoneSourceEnd::
 
-ExtendedTilesOn::
-	ld a, [Flags]
-	set 2, a
-	ld [Flags], a
-	
-	ld a, [rSTAT]
-	set 6, a
-	set 3, a
-	ld [rSTAT], a
-	ld a, [rLCDC]
-	res 4, a
-	ld [rLCDC], a
-	ret
-
-ExtendedTilesOff::
-	ld a, [Flags]
-	res 2, a
-	ld [Flags], a
-	
-	ld a, [rSTAT]
-	res 6, a
-	res 3, a
-	ld [rSTAT], a
-	ld a, [rLCDC]
-	set 4, a
-	ld [rLCDC], a
-	ret
-
 VBlank::
 	push af
 	push hl
 	push bc
 	push de
-	ld a, [Flags]
-	bit 2, a
-	jr z, .skip
-	ld a, [rLCDC]
-	res 4, a
-	ld [rLCDC], a
+	; ld a, [Flags]
+	; bit 2, a
+	; jr z, .skip
+	; ld a, [rLCDC]
+	; res 4, a
+	; ld [rLCDC], a
 .skip
-	ld a, $C0
 	call WaitDMADoneDestination
-	ld a, [Flags]
-	bit 1, a
-	jr z, .skip2
-	call UpdateBackground
-	call UpdateBackground
-.skip2
 	pop de
 	pop bc
 	pop hl

@@ -5,4 +5,3 @@
 INCLUDE "macros.asm"
 
 SECTION "bank4", ROMX, BANK[$4]
-INCBIN "world1.bin"
